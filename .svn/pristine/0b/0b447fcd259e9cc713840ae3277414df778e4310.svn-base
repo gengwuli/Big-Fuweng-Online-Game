@@ -1,0 +1,51 @@
+package gl22_hl57.game_client.model.msg;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+import gl22_hl57.game_client.model.IPlayer2GameAdapter;
+import provided.mixedData.MixedDataKey;
+
+/**
+ * A game command which is used to update info of a city in the game 
+ * @author hengyilin
+ */
+public class CityUpdateCmd extends AOurDataPacketAlgoCmd<CityUpdateInfo, IChatServer> {
+
+	/**
+	 * Generated serial version id
+	 */
+	private static final long serialVersionUID = 3742820169325497566L;
+	
+	/**
+	 * An adapter which enables this command to talk to mini model
+	 */
+	private transient ICmd2ModelAdapter model;
+
+	/**
+	 * Constructor of CityUpdateCmd, given an ICmd2ModelAdapter.
+	 * @param cmd2ModelAdpt an adapter which is used to talk to mini model
+	 */
+	public CityUpdateCmd(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.setCmd2ModelAdpt(cmd2ModelAdpt);
+	}
+
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<CityUpdateInfo, IChatServer> host, Object... params) {
+		System.out.println("CityUpdateCmd applies.");
+		CityUpdateInfo info = host.getData();
+		System.out.println("Update: {cityIdx: "+info.getCityIdx()+" , ownerId: "+info.getOwnerId()+"}");
+		MixedDataKey<IPlayer2GameAdapter> gameKey = new MixedDataKey<IPlayer2GameAdapter>(info.getGameId(), "", IPlayer2GameAdapter.class);
+		IPlayer2GameAdapter game = model.getFromLocalDict(gameKey);
+		if (game!=null)
+			game.updateCity(info);
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		model = cmd2ModelAdpt;
+	}
+
+}

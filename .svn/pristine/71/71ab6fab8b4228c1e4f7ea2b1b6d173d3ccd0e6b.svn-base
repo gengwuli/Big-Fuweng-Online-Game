@@ -1,0 +1,46 @@
+package gl22_hl57.game_client.model;
+
+import java.io.Serializable;
+
+public class CityData implements Serializable {
+
+	private static final long serialVersionUID = -7513974967401739464L;
+
+	private String name;
+	
+	private String country;
+	
+	private double lat; 
+	
+	private double lng;
+		
+	private int price = 0; // price of this city
+
+	public CityData(String cityName, String countryName, double latitude, double longitude, int value) {
+		name = cityName;
+		country = countryName;
+		lat = latitude;
+		lng = longitude;
+		price = value;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+}

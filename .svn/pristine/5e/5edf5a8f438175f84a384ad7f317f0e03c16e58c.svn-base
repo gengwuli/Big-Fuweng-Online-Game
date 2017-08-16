@@ -1,0 +1,19 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import javax.swing.ImageIcon;
+
+import common.msg.IChatMsg;
+
+public class DiceMsg implements IChatMsg {
+	
+	private static final long serialVersionUID = -3343768810980848417L;
+	ImageIcon imageIcon;
+
+	public DiceMsg(ImageIcon imageIcon) {
+		this.imageIcon = imageIcon;
+	}
+
+	public ImageIcon getContent() {
+		return imageIcon;
+	}
+}

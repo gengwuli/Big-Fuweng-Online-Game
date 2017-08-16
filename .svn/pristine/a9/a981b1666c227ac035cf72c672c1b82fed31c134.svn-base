@@ -1,0 +1,10 @@
+package gl22_hl57.model.adpt;
+
+/**
+ * Main to mini adapter
+ * @author Gengwu Li, Zhaohan Jia
+ * @version 1.0, Nov 14, 2016
+ */
+public interface IMain2MiniAdpt {
+
+}

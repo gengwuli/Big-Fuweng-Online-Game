@@ -1,0 +1,137 @@
+package gl22_hl57.model;
+
+import java.rmi.RemoteException;
+
+import javax.swing.ImageIcon;
+
+import common.IChatServer;
+import common.IUser;
+import common.OurDataPacket;
+import common.msg.chat.ILeaveMsg;
+import common.msg.chat.ITextMsg;
+import common.msg.user.IInvite2RoomMsg;
+import gl22_hl57.model.adpt.IMini2ViewAdpt;
+import gl22_hl57.model.msg.chat.ImageMsg;
+import gl22_hl57.model.msg.chat.LeaveMsg;
+import gl22_hl57.model.msg.chat.TextMsg;
+import gl22_hl57.model.msg.user.Invite2RoomMsg;
+import provided.rmiUtils.RMIUtils;
+import provided.util.IVoidLambda;
+
+/**
+ * Mini model
+ * @author Gengwu Li, Henry Lin
+ * @version 1.0, Dec 7, 2016
+ */
+public class MiniModel {
+	/**
+	 * Mini to view adapter
+	 */
+	IMini2ViewAdpt mini2ViewAdpt;
+
+	/**
+	 * Chat server
+	 */
+	IChatServer chatServer;
+
+	/**
+	 * RMI utility tool
+	 */
+	RMIUtils utils = new RMIUtils(new IVoidLambda<String>() {
+		@Override
+		public void apply(String... params) {
+			System.out.println(params);
+		}
+	});
+
+	/**
+	 * Constructor
+	 * 
+	 * @param mini2ViewAdpt
+	 *            Mini to view adapter
+	 * @param chatServer
+	 *            Chat server
+	 */
+	public MiniModel(IMini2ViewAdpt mini2ViewAdpt, IChatServer chatServer) {
+		this.mini2ViewAdpt = mini2ViewAdpt;
+		this.chatServer = chatServer;
+	}
+
+	/**
+	 * Send message to remote room
+	 * 
+	 * @param s
+	 *            Chat server stub
+	 * @param text
+	 *            Text to be sent
+	 */
+	public void sendText(IChatServer s, String text) {
+		new Thread(() -> {
+			OurDataPacket<ITextMsg, IChatServer> dataPacket = new OurDataPacket<>(ITextMsg.class, new TextMsg(text),
+					chatServer);
+			try {
+				s.receive(dataPacket);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+
+	/**
+	 * Invite remote user
+	 * 
+	 * @param remoteUser
+	 *            Remote user to be invited
+	 */
+	public void invite(IUser remoteUser) {
+		System.out.println("MiniModel invite:" + remoteUser.toString());
+		new Thread(() -> {
+			try {
+				IInvite2RoomMsg invite2RoomMsg = new Invite2RoomMsg(chatServer.getChatroom());
+				OurDataPacket<IInvite2RoomMsg, IChatServer> dataPacket = new OurDataPacket<IInvite2RoomMsg, IChatServer>(
+						IInvite2RoomMsg.class, invite2RoomMsg, chatServer);
+				remoteUser.receive(dataPacket);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}).start();
+
+	}
+
+	/**
+	 * Leave the room.
+	 */
+	public void leave() {
+		new Thread(() -> {
+			System.out.println("MiniModel leave called");
+			mini2ViewAdpt.remove(chatServer);
+			OurDataPacket<ILeaveMsg, IChatServer> dataPacket = new OurDataPacket<ILeaveMsg, IChatServer>(
+					ILeaveMsg.class, new LeaveMsg(), chatServer);
+			try {
+				chatServer.getChatroom().send(dataPacket);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+
+	/**
+	 * Send image to remote user
+	 * 
+	 * @param s
+	 *            Remote chat server stub
+	 * @param imageIcon
+	 *            Image Icon
+	 */
+	public void sendImage(IChatServer s, ImageIcon imageIcon) {
+		new Thread(() -> {
+			OurDataPacket<ImageMsg, IChatServer> dataPacket = new OurDataPacket<>(ImageMsg.class,
+					new ImageMsg(imageIcon), chatServer);
+			try {
+				s.receive(dataPacket);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+}

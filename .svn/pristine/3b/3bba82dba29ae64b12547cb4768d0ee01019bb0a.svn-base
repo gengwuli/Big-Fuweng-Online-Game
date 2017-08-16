@@ -1,0 +1,29 @@
+package gl22_hl57.model.msg.chat;
+
+import java.util.UUID;
+
+import common.msg.chat.INewCmdReqMsg;
+
+public class NewCmdReqMsg implements INewCmdReqMsg {
+
+	private static final long serialVersionUID = -1784694132827054623L;
+	
+	Class<?> clazz;
+	UUID uuid;
+	
+	public NewCmdReqMsg(Class<?> clazz, UUID uuid) {
+		this.clazz = clazz;
+		this.uuid = uuid;
+	}
+	
+	@Override
+	public Class<?> getReqClassIdx() {
+		return this.clazz;
+	}
+
+	@Override
+	public UUID getUUID() {
+		return this.uuid;
+	}
+
+}

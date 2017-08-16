@@ -1,0 +1,232 @@
+package gl22_hl57.game_server.controller;
+
+import java.awt.EventQueue;
+import java.rmi.RemoteException;
+import java.util.HashSet;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+
+import common.IChatServer;
+import common.IChatroom;
+import common.IUser;
+import gl22_hl57.game_server.model.ChatServer;
+import gl22_hl57.game_server.model.MainModel;
+import gl22_hl57.game_server.model.MiniModel;
+import gl22_hl57.game_server.model.User;
+import gl22_hl57.game_server.model.adpt.IMain2ViewAdpt;
+import gl22_hl57.game_server.model.adpt.IMini2ViewAdpt;
+import gl22_hl57.game_server.model.adpt.IMiniMVCAdpt;
+import gl22_hl57.view.IMain2ModelAdpt;
+import gl22_hl57.view.IMini2ModelAdpt;
+import gl22_hl57.view.MainView;
+import gl22_hl57.view.MiniView;
+
+/**
+ * The main controller where all things start
+ * @author Gengwu Li, Henry Lin
+ * @version 1.0, Dec 7, 2016
+ */
+public class MainController {
+	/**
+	 * Main Model
+	 */
+	MainModel mainModel;
+
+	/**
+	 * Main view
+	 */
+	MainView mainView;
+
+	/**
+	 * Constructor
+	 */
+	public MainController() {
+		mainModel = new MainModel(new IMain2ViewAdpt() {
+			//For access miniMVC 
+			private HashSet<IMiniMVCAdpt> miniMVCAdapterSet = new HashSet<>();
+
+			@Override
+			public IMiniMVCAdpt makeMiniMVC(IChatServer chatServer) {
+				// Hook this mini MVC so that it can be accessed and manipulated 
+				// In the anonymous inner class
+				final IMiniMVCAdpt[] minis = new IMiniMVCAdpt[1];
+
+				try {
+					//Mini controller
+					new MiniController() {
+						//Mini view
+						private MiniView<IChatServer> miniView;
+						//Mini model
+						private MiniModel miniModel;
+						//Constructor 
+						{
+							//Mini model to view adapter
+							IMini2ViewAdpt iMini2ViewAdpt = new IMini2ViewAdpt() {
+								@Override
+								public void addToList() {
+									try {
+										miniView.addToList(chatServer.getChatroom().getChatServers());
+									} catch (RemoteException e) {
+										e.printStackTrace();
+									}
+								}
+
+								@Override
+								public void append(String text) {
+									miniView.append(text);
+								}
+
+								@Override
+								public void addToList(IChatServer chatStub) {
+									miniView.addToList(chatStub);
+								}
+
+								@Override
+								public JPanel getPnlShow() {
+									return miniView.getPnlShow();
+								}
+
+								@Override
+								public void remove(IChatServer chatServer) {
+									miniView.removeChatServer(chatServer);
+								}
+							};
+							//Pass the iMini2ViewAdpt to chat server so that the chat server can 
+							//access the miniView
+							((ChatServer) chatServer).setAdpt(iMini2ViewAdpt);
+							//Pass the chat server to the mini model for use later
+							this.miniModel = new MiniModel(iMini2ViewAdpt, chatServer);
+
+							//Hook the min mvc adapter and return, the main model can use
+							//this to install a mini view to main view etc.
+							minis[0] = new IMiniMVCAdpt() {
+								@Override
+								public void install() {
+									mainView.install(miniView);
+								}
+
+								@Override
+								public void uninstall() {
+									miniModel.leave();
+									mainView.leaveRoom(miniView);
+								}
+							};
+
+							//Make a mini view, passing the chatroom in, 
+							//The mini view will extract the chatservers from chatroom and 
+							//instantiate the miniview.
+							this.miniView = new MiniView<IChatServer>(chatServer.getChatroom(), new IMini2ModelAdpt() {
+								@Override
+								public void addToRemoteRoom(IChatServer s, String text) {
+									miniModel.sendText(s, text);
+								}
+
+								@Override
+								public void invite(String ip) {
+									System.out.println("Main Controller invite called.");
+									miniModel.invite(mainModel.connect(ip));
+								}
+
+								@Override
+								public void leave() {
+									System.out.println("Main Controller leave called.");
+									miniModel.leave();
+									mainView.leaveRoom(miniView);
+									miniMVCAdapterSet.remove(minis[0]);
+								}
+
+								@Override
+								public void sendImage(IChatServer chatServer, ImageIcon imageIcon) {
+									miniModel.sendImage(chatServer, imageIcon);
+								}
+
+							});
+							//Get the new room and add to user
+							((User)(mainModel.getUser())).addRoom(chatServer.getChatroom());
+							//Add oneself into that new room
+							chatServer.getChatroom().addChatServer(chatServer);
+							//Add the chatservers to view
+							miniView.addToList(chatServer.getChatroom().getChatServers());
+							//Install the mini view
+							mainView.install(miniView);
+						}
+					};
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				miniMVCAdapterSet.add(minis[0]);
+				return minis[0];
+			}
+
+			//Append information to the info panel
+			@Override
+			public void appendInfo(String info) {
+				mainView.appendInfo(info);
+			}
+
+			@Override
+			public void closeAllRooms() {
+				for (IMiniMVCAdpt miniMVCAdpt : miniMVCAdapterSet) {
+					miniMVCAdpt.uninstall();
+				}
+			}
+		});
+
+		/**
+		 * Main View
+		 */
+		mainView = new MainView(new IMain2ModelAdpt() {
+			@Override
+			public IUser connect(String ip) {
+				return mainModel.connect(ip);
+			}
+
+			@Override
+			public void joinChatRoom(IChatroom room) {
+				try {
+					mainModel.joinChatroom(room);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void creatRoom(String roomname) {
+				mainModel.createRoom(roomname);
+			}
+
+			@Override
+			public void closeChatApp() {
+				mainModel.closeAllRooms();
+			}
+		});
+	}
+
+	/**
+	 * Start this controller 
+	 */
+	public void start() {
+		mainModel.start();
+		mainView.start();
+	}
+
+	/**
+	 * The main function 
+	 * @param args Input arguments
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					MainController main = new MainController();
+					main.start();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+}

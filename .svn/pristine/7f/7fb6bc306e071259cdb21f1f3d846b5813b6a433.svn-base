@@ -1,0 +1,60 @@
+package gl22_hl57.view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
+
+import common.IChatServer;
+
+/**
+ * Customized chat room renderer
+ * @author Gengwu Li, Zhaohan Jia
+ * @version 1.0, Nov 14, 2016
+ */
+public class ChatRoomRenderer extends JLabel implements ListCellRenderer<IChatServer> {
+
+	/**
+	 * Serial version id
+	 */
+	private static final long serialVersionUID = 2393739546945671468L;
+
+	/**
+	 * Map to store already rendered IChatServer
+	 */
+	Map<String, String> map = new HashMap<>();
+
+	/**
+	 * Override this function to customize JList display
+	 */
+	@Override
+	public Component getListCellRendererComponent(JList<? extends IChatServer> list, IChatServer value, int index,
+			boolean isSelected, boolean cellHasFocus) {
+		setOpaque(true);
+		try {
+			String key = value.toString();
+			//Using a cache to avoid unnecessary query to the remote object to get info
+			if (!map.containsKey(key)) {
+				map.put(key, value.getUser().getName() + "@" + value.getUser().getIP());
+			}
+			setText(map.get(key));
+			if (isSelected) {
+				setBackground(Color.black);
+				setForeground(Color.white);
+			} else {
+				setBackground(Color.white);
+				setForeground(Color.black);
+			}
+		} catch (RemoteException e) {
+			//Remote user disconnected
+			setText("0.0.0.0");
+			e.printStackTrace();
+		}
+		return this;
+	}
+
+}

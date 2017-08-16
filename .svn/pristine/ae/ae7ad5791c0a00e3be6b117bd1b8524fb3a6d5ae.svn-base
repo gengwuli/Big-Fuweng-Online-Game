@@ -1,0 +1,38 @@
+package gl22_hl57.model.msg.chat;
+
+import java.util.UUID;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.msg.chat.IAddCmdMsg;
+
+public class AddCmdMsg implements IAddCmdMsg {
+
+	private static final long serialVersionUID = -8409920110029165259L;
+
+	AOurDataPacketAlgoCmd<?, IChatServer> cmd;
+	Class<?> clazz;
+	UUID uuid;
+	
+	public AddCmdMsg(AOurDataPacketAlgoCmd<?, IChatServer> cmd, Class<?> clazz, UUID uuid) {
+		this.cmd = cmd;
+		this.clazz = clazz;
+		this.uuid = uuid;
+	}
+	
+	@Override
+	public AOurDataPacketAlgoCmd<?, IChatServer> getCmd() {
+		return cmd;
+	}
+
+	@Override
+	public Class<?> getClassIdx() {
+		return clazz;
+	}
+
+	@Override
+	public UUID getUUID() {
+		return uuid;
+	}
+
+}

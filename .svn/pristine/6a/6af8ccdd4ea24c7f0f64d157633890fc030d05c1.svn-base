@@ -1,0 +1,26 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+import common.msg.IChatMsg;
+
+public class EndGameMsg implements IChatMsg {
+
+	private static final long serialVersionUID = -6146086028148518079L;
+
+	private boolean won;
+	
+	private UUID gameId;
+	
+	public EndGameMsg(UUID gameUUID, boolean isWinner) {
+		gameId = gameUUID;
+		won = isWinner;
+	}
+	
+	public UUID getGameId() {
+		return gameId;
+	}
+	
+	public boolean didWin() {
+		return won;
+	}
+}

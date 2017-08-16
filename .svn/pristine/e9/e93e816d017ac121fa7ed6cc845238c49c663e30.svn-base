@@ -1,0 +1,50 @@
+package gl22_hl57.model.msg.chat;
+
+import java.rmi.RemoteException;
+import java.util.UUID;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+import common.msg.chat.IAddCmdMsg;
+import common.msg.chat.INewCmdReqMsg;
+import gl22_hl57.model.ChatServer;
+import provided.datapacket.DataPacketAlgo;
+
+public class NewCmdReqCmd extends AOurDataPacketAlgoCmd<INewCmdReqMsg, IChatServer> {
+
+	private static final long serialVersionUID = 4196432435893133847L;
+
+	ICmd2ModelAdapter cmd2ModelAdpter;
+	
+	public NewCmdReqCmd(ICmd2ModelAdapter cmd2ModelAdpter) {
+		this.cmd2ModelAdpter = cmd2ModelAdpter;
+	}
+	
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<INewCmdReqMsg, IChatServer> host, Object... params) {
+		UUID uuid = host.getData().getUUID();
+		
+		ChatServer chatServer = (ChatServer) cmd2ModelAdpter.getChatServer();
+		DataPacketAlgo<Void, Object> algo = chatServer.getAlgo();
+		System.out.println(host.getData().getReqClassIdx());
+		AOurDataPacketAlgoCmd<?, IChatServer> cmd = (AOurDataPacketAlgoCmd<?, IChatServer>) algo.getCmd(host.getData().getReqClassIdx());
+		
+		IAddCmdMsg addCmdMsg = new AddCmdMsg(cmd, host.getData().getReqClassIdx(), uuid);
+		
+		OurDataPacket<IAddCmdMsg, IChatServer> dataPacket = new OurDataPacket<IAddCmdMsg, IChatServer>(IAddCmdMsg.class, addCmdMsg, cmd2ModelAdpter.getChatServer());
+		try {
+			host.getSender().receive(dataPacket);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.cmd2ModelAdpter = cmd2ModelAdpt;
+	}
+
+}

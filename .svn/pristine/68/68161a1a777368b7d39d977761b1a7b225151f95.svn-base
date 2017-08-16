@@ -1,0 +1,13 @@
+package gl22_hl57.game_client.model;
+
+import gl22_hl57.game_client.model.msg.AvatarUpdateInfo;
+import gl22_hl57.game_client.model.msg.CityUpdateInfo;
+
+public interface IPlayer2GameAdapter {
+		
+	public void updateAvatar(AvatarUpdateInfo info);
+	
+	public void updateCity(CityUpdateInfo info);
+	
+	public void startTurn();
+}

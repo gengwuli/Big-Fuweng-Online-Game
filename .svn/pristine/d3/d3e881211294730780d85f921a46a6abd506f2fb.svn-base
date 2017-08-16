@@ -1,0 +1,43 @@
+package gl22_hl57.model.msg.chat;
+
+import java.util.UUID;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+import common.msg.chat.IAddCmdMsg;
+import gl22_hl57.model.ChatServer;
+import provided.datapacket.DataPacketAlgo;
+import provided.mixedData.MixedDataKey;
+
+public class AddCmdCmd extends AOurDataPacketAlgoCmd<IAddCmdMsg, IChatServer> {
+
+	private static final long serialVersionUID = 5357639501822296655L;
+
+	transient ICmd2ModelAdapter cmd2ModelAdapter;
+	
+	public AddCmdCmd(ICmd2ModelAdapter cmd2ModelAdapter) {
+		this.cmd2ModelAdapter = cmd2ModelAdapter;
+	}
+	
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<IAddCmdMsg, IChatServer> host, Object... params) {
+		ChatServer chatServer = (ChatServer) cmd2ModelAdapter.getChatServer();
+		DataPacketAlgo<Void, Object> algo = chatServer.getAlgo();
+		IAddCmdMsg addCmdMsg = host.getData();
+		AOurDataPacketAlgoCmd<?, IChatServer> cmd = addCmdMsg.getCmd();
+		cmd.setCmd2ModelAdpt(cmd2ModelAdapter);
+		algo.setCmd(addCmdMsg.getClassIdx(), cmd);
+		UUID uuid = addCmdMsg.getUUID();
+		MixedDataKey<Object> key = new MixedDataKey<>(uuid, "", Object.class);
+		OurDataPacket<?, IChatServer> dataPacket = (OurDataPacket<?, IChatServer>)cmd2ModelAdapter.getFromLocalDict(key);
+		dataPacket.execute(algo);
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.cmd2ModelAdapter = cmd2ModelAdpt;
+	}
+}

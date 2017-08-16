@@ -1,0 +1,121 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.io.IOException;
+import java.util.UUID;
+import common.msg.IChatMsg;
+import gov.nasa.worldwind.geom.Position;
+
+/**
+ * A game message which contains update info of an avatar in the game
+ * @author hengyilin
+ */
+public class AvatarUpdateInfo implements IChatMsg {
+
+	/**
+	 * Generated serial version id
+	 */
+	private static final long serialVersionUID = -5493378342110442677L;
+	
+	/**
+	 * UUID of the game
+	 */
+	private UUID gameId;
+	
+	/**
+	 * UUID of the avatar(IChatServer)
+	 */
+	private UUID id;
+	
+	/**
+	 * New updating position
+	 */
+	private transient Position pos;
+	
+	/**
+	 * New updating money
+	 */
+	private Integer money;
+		
+	/**
+	 * Constructor of AvatarUpdateInfo message
+	 * @param gameId uuid of the game
+	 * @param avatarId uuid of the avatar(IChatServer)
+	 * @param newPos new position of the avatar
+	 * @param newMoney the amount of money changed
+	 */
+	public AvatarUpdateInfo(UUID gameId, UUID avatarId, Position newPos, Integer newMoney) {
+		this.gameId = gameId;
+		id = avatarId;
+		pos = newPos;
+		money = newMoney;
+	}
+
+	/**
+	 * Getter of UUID of the game
+	 * @return UUID of the game
+	 */
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	/**
+	 * Getter of UUID of the avatar(IChatServer)
+	 * @return UUID of the avatar(IChatServer)
+	 */
+	public UUID getId() {
+		return id;
+	}
+
+	/**
+	 * Getter of the new updating position
+	 * @return the new updating position
+	 */
+	public Position getPos() {
+		return pos;
+	}
+
+	/**
+	 * Getter of the amount of money changed
+	 * @return the amount of money changed
+	 */
+	public Integer getMoney() {
+		return money;
+	}
+	
+	/**
+	 * Customized writeObject for transient field, position.
+	 * @param out java.io.ObjectOutputStream for writing out data while serializing
+	 * @throws IOException an IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		if (pos!=null) {
+			out.writeDouble(pos.getAltitude());
+			out.writeDouble(pos.getLatitude().degrees);
+			out.writeDouble(pos.getLongitude().degrees);
+		}
+	}
+	
+	/**
+	 * Customized readObject for transient field, poistion.
+	 * @param in java.io.ObjectInputStream for reading in data while unserializing
+	 * @throws IOException an IOException
+	 * @throws ClassNotFoundException a ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject(); 
+		try {
+	        double alt = in.readDouble();
+			double lat = in.readDouble();
+			double lng = in.readDouble();
+			this.pos = Position.fromDegrees(lat, lng, alt);
+        }
+		catch (Exception e) 
+        { 	
+			System.out.println("Position is null");
+        }
+	}
+
+
+}
+

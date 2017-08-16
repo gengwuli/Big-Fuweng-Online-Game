@@ -1,0 +1,170 @@
+package gl22_hl57.model;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.UUID;
+
+import javax.swing.JComponent;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.IChatroom;
+import common.ICmd2ModelAdapter;
+import common.IComponentFactory;
+import common.IUser;
+import common.OurDataPacket;
+import common.msg.IChatMsg;
+import common.msg.chat.IAddCmdMsg;
+import common.msg.chat.IAddMeMsg;
+import common.msg.chat.ILeaveMsg;
+import common.msg.chat.INewCmdReqMsg;
+import common.msg.chat.ITextMsg;
+import common.msg.user.IInvite2RoomMsg;
+import gl22_hl57.model.adpt.IMini2ViewAdpt;
+import gl22_hl57.model.msg.chat.AddCmdCmd;
+import gl22_hl57.model.msg.chat.AddMeCmd;
+import gl22_hl57.model.msg.chat.ImageCmd;
+import gl22_hl57.model.msg.chat.ImageMsg;
+import gl22_hl57.model.msg.chat.LeaveCmd;
+import gl22_hl57.model.msg.chat.NewCmdReqCmd;
+import gl22_hl57.model.msg.chat.NewCmdReqMsg;
+import gl22_hl57.model.msg.chat.TextCmd;
+import gl22_hl57.model.msg.user.Invite2RoomCmd;
+import provided.datapacket.DataPacketAlgo;
+import provided.mixedData.MixedDataDictionary;
+import provided.mixedData.MixedDataKey;
+
+/**
+ * Chat server object contains the chatroom and user
+ * Represents a remote object, can be instantiated directly 
+ * and sent as a stub to be used by the client
+ * @author Gengwu Li, Henry Lin
+ * @version 1.0, Dec 7, 2016
+ */
+public class ChatServer extends UnicastRemoteObject implements IChatServer {
+	
+	private static final long serialVersionUID = 382418868833091261L;
+	private IUser user;
+	private IChatroom chatroom;
+	private IMini2ViewAdpt mini2ViewAdpt;
+	private MixedDataDictionary mixedDataDictionary = new MixedDataDictionary();
+	
+	ICmd2ModelAdapter localCmd2ModelAdapter = new ICmd2ModelAdapter() {
+		
+		@Override
+		public <T extends IChatMsg> void sendMsg2LocalChatroom(Class<T> index, T msg) {
+			//May need this later
+//			chatroom.send(msg);
+		}
+		
+		@Override
+		public <T> boolean putIntoLocalDict(MixedDataKey<T> key, T value) {
+			boolean ret = false;
+			if (!mixedDataDictionary.containsKey(key)) {
+				ret = true;
+				mixedDataDictionary.put(key, value);
+			}
+			return ret;
+		}
+		
+		@Override
+		public <T> T getFromLocalDict(MixedDataKey<T> key) {
+			return mixedDataDictionary.get(key);
+		}
+		
+		@Override
+		public IChatServer getChatServer() {
+			return ChatServer.this;
+		}
+		
+		@Override
+		public void buildComponentInScrollable(IComponentFactory fac) {
+			JComponent component = fac.make();
+			mini2ViewAdpt.getPnlShow().add(component);
+			mini2ViewAdpt.getPnlShow().revalidate();
+		}
+		
+		@Override
+		public void buildComponentInNonScrollable(IComponentFactory fac) {
+			JComponent component = fac.make();
+			mini2ViewAdpt.getPnlShow().add(component);
+			mini2ViewAdpt.getPnlShow().revalidate();
+		}
+	};
+	
+	DataPacketAlgo<Void, Object> algo = new DataPacketAlgo<Void, Object>(
+			new AOurDataPacketAlgoCmd<Object, IChatServer>() {
+				transient ICmd2ModelAdapter cmd2ModelAdapter;
+				{
+					cmd2ModelAdapter = localCmd2ModelAdapter;
+				}
+				@Override
+				public Void apply(Class<?> index, OurDataPacket<Object, IChatServer> host, Object... params) {
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							UUID uuid = UUID.randomUUID();
+							MixedDataKey<Object> unknownMsgKey = new MixedDataKey<>(uuid, "", Object.class);
+							cmd2ModelAdapter.putIntoLocalDict(unknownMsgKey, host);
+//							INewCmdReqMsg msg = new NewCmdReqMsg(host.getData().getClass(), uuid);
+							INewCmdReqMsg msg = new NewCmdReqMsg(index, uuid);
+							OurDataPacket<INewCmdReqMsg, IChatServer> dataPacket = new OurDataPacket<INewCmdReqMsg, IChatServer>(
+									INewCmdReqMsg.class, msg, cmd2ModelAdapter.getChatServer());
+							try {
+								host.getSender().receive(dataPacket);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}).start();
+					return null;
+				}
+
+				@Override
+				public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+					this.cmd2ModelAdapter = cmd2ModelAdpt;
+				}
+			});
+	
+	public ChatServer(IUser user, IChatroom chatroom) throws RemoteException{
+		this.user = user;
+		this.chatroom = chatroom;
+		initChatServer();
+	}
+	
+	private void initChatServer() {
+		algo.setCmd(IAddCmdMsg.class, new AddCmdCmd(localCmd2ModelAdapter));
+		algo.setCmd(IAddMeMsg.class, new AddMeCmd(localCmd2ModelAdapter));
+		algo.setCmd(ILeaveMsg.class, new LeaveCmd(localCmd2ModelAdapter));
+		algo.setCmd(INewCmdReqMsg.class, new NewCmdReqCmd(localCmd2ModelAdapter));
+		algo.setCmd(IInvite2RoomMsg.class, new Invite2RoomCmd(localCmd2ModelAdapter));
+		algo.setCmd(ITextMsg.class, new TextCmd(localCmd2ModelAdapter));
+		algo.setCmd(ImageMsg.class, new ImageCmd(localCmd2ModelAdapter));
+	}
+
+	@Override
+	public <S> void receive(OurDataPacket<? extends IChatMsg, S> dp) throws RemoteException {
+		dp.execute(algo);
+	}
+	
+	@Override
+	public IUser getUser() throws RemoteException {
+		return user;
+	}
+	@Override
+	public IChatroom getChatroom() throws RemoteException {
+		return chatroom;
+	}
+	
+	public DataPacketAlgo<Void, Object> getAlgo() {
+		return algo;
+	}
+
+	public void setAdpt(IMini2ViewAdpt iMini2ViewAdpt) {
+		this.mini2ViewAdpt = iMini2ViewAdpt;
+	}
+	
+	public void refresh() {
+		mini2ViewAdpt.addToList();
+	}
+}

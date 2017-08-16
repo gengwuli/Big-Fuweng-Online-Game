@@ -1,0 +1,248 @@
+city,country,lat,lng,pop,city_ascii,iso2,iso3,province
+Kabul,Afghanistan,34.51669029,69.18326005,3160266,Kabul,AF,AFG,Kabul
+Mariehamn,Aland,60.09699618,19.94900447,10682,Mariehamn,AX,ALD,Finström
+Tirana,Albania,41.32754071,19.81888301,658318,Tirana,AL,ALB,Durrës
+Algiers,Algeria,36.7630648,3.05055253,2665831.5,Algiers,DZ,DZA,Alger
+Pago Pago,American Samoa,-14.2766105,-170.7066451,12038,Pago Pago,AS,ASM,
+Andorra,Andorra,42.50000144,1.516485961,38127,Andorra,AD,AND,
+Luanda,Angola,-8.838286114,13.23442704,3562086,Luanda,AO,AGO,Luanda
+McMurdo Station,Antarctica,-77.73228239,166.8694157,600,McMurdo Station,AQ,ATA,
+Saint John's,Antigua and Barbuda,17.11803652,-61.85003382,29862.5,Saint John's,AG,ATG,
+Buenos Aires,Argentina,-34.60250161,-58.39753137,11862073,Buenos Aires,AR,ARG,Ciudad de Buenos Aires
+Yerevan,Armenia,40.18115074,44.51355139,1097742.5,Yerevan,AM,ARM,Erevan
+Oranjestad,Aruba,12.53038373,-70.02899195,50887.5,Oranjestad,AW,ABW,
+Melbourne,Australia,-37.82003131,144.9750162,2131812.5,Melbourne,AU,AUS,Victoria
+Sydney,Australia,-33.92001097,151.1851798,4135711,Sydney,AU,AUS,New South Wales
+Vienna,Austria,48.20001528,16.36663896,2065500,Vienna,AT,AUT,Wien
+Baku,Azerbaijan,40.39527203,49.86221716,2007150,Baku,AZ,AZE,Baki
+Manama,Bahrain,26.23613629,50.58305172,360697,Manama,BH,BHR,
+Dhaka,Bangladesh,23.72305971,90.40857947,9899167,Dhaka,BD,BGD,Dhaka
+Bridgetown,Barbados,13.10200258,-59.61652674,143865,Bridgetown,BB,BRB,Saint Michael
+Minsk,Belarus,53.89997744,27.56662716,1691069,Minsk,BY,BLR,Minsk
+Brussels,Belgium,50.83331708,4.333316608,1381011,Brussels,BE,BEL,Brussels
+Belmopan,Belize,17.25203351,-88.767073,14300.5,Belmopan,BZ,BLZ,Cayo
+Porto-Novo,Benin,6.483310973,2.616625528,267084,Porto-Novo,BJ,BEN,Ouémé
+Hamilton,Bermuda,32.29419029,-64.78393742,32910,Hamilton,BM,BMU,
+Thimphu,Bhutan,27.47298586,89.63901404,88930.5,Thimphu,BT,BTN,Thimphu
+Santa Cruz,Bolivia,-17.75391762,-63.22599634,1859530.5,Santa Cruz,BO,BOL,Santa Cruz
+Sarajevo,Bosnia and Herzegovina,43.8500224,18.38300167,662816.5,Sarajevo,BA,BIH,Sarajevo
+Gaborone,Botswana,-24.64631346,25.91194779,183827,Gaborone,BW,BWA,South-East
+Sao Paulo,Brazil,-23.55867959,-46.62501998,14433147.5,Sao Paulo,BR,BRA,São Paulo
+Bandar Seri Begawan,Brunei,4.883331115,114.9332841,218250,Bandar Seri Begawan,BN,BRN,Brunei and Muara
+Sofia,Bulgaria,42.68334943,23.31665401,1029913.5,Sofia,BG,BGR,Grad Sofiya
+Ouagadougou,Burkina Faso,12.37031598,-1.524723756,992228.5,Ouagadougou,BF,BFA,Kadiogo
+Bujumbura,Burundi,-3.37608722,29.36000606,331700,Bujumbura,BI,BDI,Bujumbura Mairie
+Phnom Penh,Cambodia,11.55003013,104.9166345,1466000,Phnom Penh,KH,KHM,Phnom Penh
+Yaounde,Cameroon,3.866700662,11.51665076,1335793.5,Yaounde,CM,CMR,Centre
+Montréal,Canada,45.49999921,-73.58329696,3017278,Montréal,CA,CAN,Québec
+Vancouver,Canada,49.27341658,-123.1216442,1458415,Vancouver,CA,CAN,British Columbia
+Toronto,Canada,43.69997988,-79.42002079,4573710.5,Toronto,CA,CAN,Ontario
+Praia,Cape Verde,14.91669802,-23.51668889,101111.5,Praia,CV,CPV,
+George Town,Cayman Islands,19.28043683,-81.32998173,2770.5,George Town,KY,CYM,
+Bangui,Central African Republic,4.366644306,18.55828813,727348,Bangui,CF,CAF,Bangui
+Ndjamena,Chad,12.11309654,15.04914831,835193.5,Ndjamena,TD,TCD,Hadjer-Lamis
+Santiago,Chile,-33.45001382,-70.66704085,2883305.5,Santiago,CL,CHL,Región Metropolitana de Santiago
+Shenzhen,China,22.55237051,114.1221231,4291796,Shenzhen,CN,CHN,Guangdong
+Guangzhou,China,23.1449813,113.3250101,5990912.5,Guangzhou,CN,CHN,Guangdong
+Xian,China,34.27502545,108.8949963,3617406,Xian,CN,CHN,Shaanxi
+Wuhan,China,30.58003135,114.270017,5713603,Wuhan,CN,CHN,Hubei
+Nanjing,China,32.05001914,118.7799743,3383005,Nanjing,CN,CHN,Jiangsu
+Beijing,China,39.92889223,116.3882857,9293300.5,Beijing,CN,CHN,Beijing
+Shanghai,China,31.21645245,121.4365047,14797756,Shanghai,CN,CHN,Shanghai
+Cali,Colombia,3.399959126,-76.49996647,2216418,Cali,CO,COL,Valle del Cauca
+Bogota,Colombia,4.596423563,-74.08334396,7052830.5,Bogota,CO,COL,Bogota
+Moroni,Comoros,-11.7041577,43.2402441,85785,Moroni,KM,COM,
+Brazzaville,Congo (Brazzaville),-4.259185772,15.28468949,1259445,Brazzaville,CG,COG,Pool
+Kinshasa,Congo (Kinshasa),-4.329724102,15.31497188,6704351.5,Kinshasa,CD,COD,Kinshasa City
+Rarotonga,Cook Islands,-21.25003497,-159.7500013,2525,Rarotonga,CK,COK,
+San Jose,Costa Rica,9.93501243,-84.08405135,642862,San Jose,CR,CRI,San José
+Zagreb,Croatia,45.80000673,15.99999467,710746,Zagreb,HR,HRV,Grad Zagreb
+Havana,Cuba,23.13195884,-82.36418217,2082458.5,Havana,CU,CUB,Ciudad de la Habana
+Willemstad,Curacao,12.20042971,-69.01998377,146813,Willemstad,CW,CUW,
+Nicosia,Cyprus,35.16667645,33.36663489,212376,Nicosia,CY,CYP,
+Prague,Czech Republic,50.08333701,14.46597978,582043.5,Prague,CZ,CZE,Prague
+København,Denmark,55.67856419,12.56348575,1085000,Kobenhavn,DK,DNK,Hovedstaden
+Djibouti,Djibouti,11.59501446,43.14800167,763506.5,Djibouti,DJ,DJI,Djibouti
+Roseau,Dominica,15.30101564,-61.38701298,19953.5,Roseau,DM,DMA,Saint George
+Santo Domingo,Dominican Republic,18.47007285,-69.90008508,1078436.5,Santo Domingo,DO,DOM,Distrito Nacional
+Dili,East Timor,-8.559388409,125.5794559,213947,Dili,TL,TLS,Dili
+Quito,Ecuador,-0.214988181,-78.50005111,1550407,Quito,EC,ECU,Pichincha
+Cairo,Egypt,30.04996035,31.24996822,9813807,Cairo,EG,EGY,Al Qahirah
+San Salvador,El Salvador,13.71000165,-89.20304122,717903.5,San Salvador,SV,SLV,San Salvador
+Malabo,Equatorial Guinea,3.750015278,8.783277546,155963,Malabo,GQ,GNQ,Bioko Norte
+Asmara,Eritrea,15.33333925,38.93332353,592366,Asmara,ER,ERI,Anseba
+Addis Ababa,Ethiopia,9.033310363,38.70000443,2928864.5,Addis Ababa,ET,ETH,Addis Ababa
+Stanley,Falkland Islands,-51.70001097,-57.8499679,2213,Stanley,FK,FLK,
+Tórshavn,Faroe Islands,62.03002382,-6.820033611,14398,Torshavn,FO,FRO,Eysturoyar
+Palikir,Federated States of Micronesia,6.916643696,158.1499743,4645,Palikir,FM,FSM,
+Suva,Fiji,-18.13301593,178.4417073,131835,Suva,FJ,FJI,Central
+Helsinki,Finland,60.17556337,24.93412634,836728.5,Helsinki,FI,FIN,Southern Finland
+Paris,France,48.86669293,2.333335326,4957588.5,Paris,FR,FRA,Île-de-France
+Papeete,French Polynesia,-17.53336261,-149.5666694,78856,Papeete,PF,PYF,
+Libreville,Gabon,0.38538861,9.457965046,530755.5,Libreville,GA,GAB,Estuaire
+Tbilisi,Georgia,41.72500999,44.79079545,1052628.5,Tbilisi,GE,GEO,Tbilisi
+Berlin,Germany,52.52181866,13.40154862,3250007,Berlin,DE,DEU,Berlin
+Accra,Ghana,5.550034606,-0.21671574,2042132,Accra,GH,GHA,Greater Accra
+Gibraltar,Gibraltar,36.13243495,-5.37807483,106813.5,Gibraltar,GI,GIB,Gibraltar
+Athens,Greece,37.98332623,23.73332108,1985568.5,Athens,GR,GRC,Attiki
+Nuuk,Greenland,64.19828147,-51.73265879,14798,Nuuk,GL,GRL,Kommuneqarfik Sermersooq
+Saint George's,Grenada,12.0526334,-61.74164323,30538.5,Saint George's,GD,GRD,
+Agana,Guam,13.4700163,144.750017,61755.5,Agana,GU,GUM,
+Guatemala,Guatemala,14.62113466,-90.52696558,1009469,Guatemala,GT,GTM,Guatemala
+Conakry,Guinea,9.531522846,-13.68023503,1494000,Conakry,GN,GIN,Conakry
+Bissau,Guinea Bissau,11.86502382,-15.59836084,395683.5,Bissau,GW,GNB,Bissau
+Georgetown,Guyana,6.801973693,-58.16702865,249683.5,Georgetown,GY,GUY,East Berbice-Corentyne
+Port-au-Prince,Haiti,18.5410246,-72.33603459,1616371,Port-au-Prince,HT,HTI,Ouest
+Tegucigalpa,Honduras,14.1020449,-87.21752934,898424,Tegucigalpa,HN,HND,Francisco Morazán
+Hong Kong,Hong Kong S.A.R.,22.3049809,114.1850093,5878789.5,Hong Kong,HK,HKG,
+Budapest,Hungary,47.50000633,19.08332068,1679000,Budapest,HU,HUN,Budapest
+Reykjavík,Iceland,64.15002362,-21.95001449,140059,Reykjavik,IS,ISL,Suðurnes
+Hyderabad,India,17.39998313,78.47995357,4986908,Hyderabad,IN,IND,Andhra Pradesh
+New Delhi,India,28.60002301,77.19998002,317797,New Delhi,IN,IND,Delhi
+Mumbai,India,19.01699038,72.8569893,15834918,Mumbai,IN,IND,Maharashtra
+Kolkata,India,22.4949693,88.32467566,9709196,Kolkata,IN,IND,West Bengal
+Denpasar,Indonesia,-8.650028871,115.2199849,569133.5,Denpasar,ID,IDN,Bali
+Palu,Indonesia,-0.907038962,119.8330367,473871,Palu,ID,IDN,Sulawesi Tengah
+Jakarta,Indonesia,-6.174417705,106.8294376,8832560.5,Jakarta,ID,IDN,Jakarta Raya
+Tehran,Iran,35.67194277,51.42434403,7513154.5,Tehran,IR,IRN,Tehran
+Baghdad,Iraq,33.3386485,44.39386877,5054000,Baghdad,IQ,IRQ,Baghdad
+Dublin,Ireland,53.33306114,-6.248905682,1013988,Dublin,IE,IRL,Dublin
+Douglas,Isle of Man,54.15042727,-4.480021404,31036,Douglas,IM,IMN,
+Tel Aviv-Yafo,Israel,32.07999147,34.77001176,1745179,Tel Aviv-Yafo,IL,ISR,Tel Aviv
+Venice,Italy,45.43865928,12.33499874,270816,Venice,IT,ITA,Veneto
+Milan,Italy,45.4699752,9.20500891,2125830.5,Milan,IT,ITA,Lombardia
+Rome,Italy,41.89595563,12.48325842,1687226,Rome,IT,ITA,Lazio
+Abidjan,Ivory Coast,5.319996967,-4.04004826,3496197.5,Abidjan,CI,CIV,Lagunes
+Kingston,Jamaica,17.97707662,-76.76743371,801336.5,Kingston,JM,JAM,Kingston
+Osaka,Japan,34.75003522,135.4601448,6943206.5,Osaka,JP,JPN,Osaka
+Tokyo,Japan,35.68501691,139.7514074,22006299.5,Tokyo,JP,JPN,Tokyo
+Amman,Jordan,31.95002525,35.93329993,1060000,Amman,JO,JOR,Amman
+Almaty,Kazakhstan,43.32498985,76.91503617,1096256,Almaty,KZ,KAZ,Almaty
+Nairobi,Kenya,-1.283346742,36.81665686,2880273.5,Nairobi,KE,KEN,Nairobi
+Tarawa,Kiribati,1.338187506,173.0175708,25668,Tarawa,KI,KIR,
+Pristina,Kosovo,42.66670961,21.16598425,331700,Pristina,-99,KOS,Pristina
+Hawalli,Kuwait,29.33334002,47.99999756,164212,Hawalli,KW,KWT,Hawalli
+Bishkek,Kyrgyzstan,42.87307945,74.58520422,820606,Bishkek,KG,KGZ,Bishkek
+Vientiane,Laos,17.96669273,102.59998,662174,Vientiane,LA,LAO,Vientiane [prefecture]
+Riga,Latvia,56.95002382,24.09996537,723802.5,Riga,LV,LVA,Riga
+Beirut,Lebanon,33.87197512,35.50970821,1779062.5,Beirut,LB,LBN,Beirut
+Maseru,Lesotho,-29.31667438,27.48327307,239839.5,Maseru,LS,LSO,Maseru
+Monrovia,Liberia,6.31055666,-10.80475163,913331,Monrovia,LR,LBR,Montserrado
+Tripoli,Libya,32.89250002,13.18001176,1209199,Tripoli,LY,LBY,Tajura' wa an Nawahi al Arba
+Vaduz,Liechtenstein,47.13372377,9.516669473,20811.5,Vaduz,LI,LIE,
+Vilnius,Lithuania,54.68336631,25.31663529,524697.5,Vilnius,LT,LTU,Vilniaus
+Luxembourg,Luxembourg,49.61166038,6.130002806,91972,Luxembourg,LU,LUX,Luxembourg
+Macau,Macau S.A.R,22.20299746,113.5450484,568700,Macau,MO,MAC,
+Skopje,Macedonia,42.00000612,21.43346147,484488,Skopje,MK,MKD,Centar
+Antananarivo,Madagascar,-18.91663735,47.5166239,1544216.5,Antananarivo,MG,MDG,Antananarivo
+Lilongwe,Malawi,-13.98329507,33.78330196,646750,Lilongwe,MW,MWI,Lilongwe
+Kuala Lumpur,Malaysia,3.166665872,101.6999833,1448000,Kuala Lumpur,MY,MYS,Selangor
+Male,Maldives,4.16670819,73.49994747,108310,Male,MV,MDV,
+Djenne,Mali,13.89999005,-4.549991294,27663,Djenne,ML,MLI,Mopti
+Valletta,Malta,35.89973248,14.51471065,187608,Valletta,MT,MLT,
+Majuro,Marshall Islands,7.103004311,171.3800002,22950,Majuro,MH,MHL,
+Atar,Mauritania,20.51664044,-13.04998926,44265,Atar,MR,MRT,Adrar
+Port Louis,Mauritius,-20.16663857,57.49999385,371953.5,Port Louis,MU,MUS,
+Vicente Guerrero,Mexico,30.76405113,-116.0092603,7294.5,Vicente Guerrero,MX,MEX,Baja California
+Mexico City,Mexico,19.44244244,-99.1309882,14919501,Mexico City,MX,MEX,Distrito Federal
+Chisinau,Moldova,47.00502362,28.85771114,662064,Chisinau,MD,MDA,Chisinau
+Monaco,Monaco,43.73964569,7.406913173,36371,Monaco,MC,MCO,
+Ulaanbaatar,Mongolia,47.9166734,106.9166158,827306,Ulaanbaatar,MN,MNG,Ulaanbaatar
+Podgorica,Montenegro,42.46597251,19.26630692,141161.5,Podgorica,ME,MNE,Podgorica
+Casablanca,Morocco,33.59997622,-7.616367433,3162954.5,Casablanca,MA,MAR,Grand Casablanca
+Maputo,Mozambique,-25.95527749,32.58916296,1318806.5,Maputo,MZ,MOZ,Maputo
+Rangoon,Myanmar,16.7833541,96.16667761,3694910,Rangoon,MM,MMR,Yangon
+Grootfontein,Namibia,-19.56662352,18.11655798,19149.5,Grootfontein,NA,NAM,Otjozondjupa
+Kathmandu,Nepal,27.71669191,85.31664221,895000,Kathmandu,NP,NPL,Bhaktapur
+Amsterdam,Netherlands,52.34996869,4.916640176,886318,Amsterdam,NL,NLD,Noord-Holland
+Noumea,New Caledonia,-22.26252776,166.4442852,89742.5,Noumea,NC,NCL,Sud
+Auckland,New Zealand,-36.850013,174.7649808,759510,Auckland,NZ,NZL,Auckland
+Managua,Nicaragua,12.15301658,-86.26849166,920000,Managua,NI,NIC,Managua
+Agadez,Niger,16.99587343,7.98280961,103165.5,Agadez,NE,NER,Agadez
+Lagos,Nigeria,6.443261653,3.391531071,4733768,Lagos,NG,NGA,Lagos
+Pyongyang,North Korea,39.0194387,125.7546907,2899398.5,Pyongyang,KP,PRK,P'yongyang
+Ammochostos,Northern Cyprus,35.12502525,33.95001013,33016.5,Ammochostos,-99,CYN,
+Capitol Hill,Northern Mariana Islands,15.21125368,145.7505761,1764,Capitol Hill,MP,MNP,
+Oslo,Norway,59.91669029,10.74997921,707500,Oslo,NO,NOR,Oslo
+Muscat,Oman,23.61332481,58.59331213,660779,Muscat,OM,OMN,Muscat
+Karachi,Pakistan,24.86999229,66.99000891,11877109.5,Karachi,PK,PAK,Sind
+Koror,Palau,7.345226355,134.4695009,11200,Koror,PW,PLW,
+Gaza,Palestine,31.52999921,34.44501868,477460.5,Gaza,PS,PSE,
+Panama City,Panama,8.96801719,-79.53303715,844584,Panama City,PA,PAN,Panama
+Port Moresby,Papua New Guinea,-9.464707826,147.1925036,267434.5,Port Moresby,PG,PNG,Central
+Asuncion,Paraguay,-25.29640298,-57.64150517,940846.5,Asuncion,PY,PRY,Asunción
+Lima,Peru,-12.04801268,-77.05006209,7385117,Lima,PE,PER,Lima
+Manila,Philippines,14.60415895,120.9822172,7088787.5,Manila,PH,PHL,Metropolitan Manila
+Warsaw,Poland,52.25000063,20.99999955,1704569.5,Warsaw,PL,POL,Masovian
+Lisbon,Portugal,38.72272288,-9.144866305,1664901,Lisbon,PT,PRT,Lisboa
+San Juan,Puerto Rico,18.44002301,-66.12997929,1437115.5,San Juan,PR,PRI,
+Doha,Qatar,25.28655601,51.53296789,1090655,Doha,QA,QAT,Ad Dawhah
+Bucharest,Romania,44.4333718,26.09994665,1842097,Bucharest,RO,ROU,Bucharest
+St. Petersburg,Russia,59.93901451,30.31602006,4023106,St. Petersburg,RU,RUS,City of St. Petersburg
+Moscow,Russia,55.75216412,37.61552283,10452000,Moscow,RU,RUS,Moskva
+Kigali,Rwanda,-1.953590069,30.06053178,802630.5,Kigali,RW,RWA,Kigali City
+Basseterre,Saint Kitts and Nevis,17.30203046,-62.71700932,18693.5,Basseterre,KN,KNA,
+Castries,Saint Lucia,14.00197349,-61.00000818,24298.5,Castries,LC,LCA,
+Kingstown,Saint Vincent and the Grenadines,13.14827883,-61.21206242,37001.5,Kingstown,VC,VCT,
+Apia,Samoa,-13.84154504,-171.7386416,49812,Apia,WS,WSM,
+San Marino,San Marino,43.91715008,12.46667029,29289.5,San Marino,SM,SMR,
+Sao Tome,Sao Tome and Principe,0.333402119,6.733325153,72192.5,Sao Tome,ST,STP,
+Riyadh,Saudi Arabia,24.64083315,46.77274166,4335480.5,Riyadh,SA,SAU,Ar Riyad
+Dakar,Senegal,14.71583173,-17.47313013,2540200,Dakar,SM,SEN,Dakar
+Belgrade,Serbia,44.81864545,20.46799068,1099000,Belgrade,RS,SRB,Grad Beograd
+Victoria,Seychelles,-4.616631654,55.44998979,28228.5,Victoria,SC,SYC,
+Freetown,Sierra Leone,8.470011412,-13.23421574,420384,Freetown,SL,SLE,Western
+Singapore,Singapore,1.293033466,103.8558207,4236614.5,Singapore,SG,SGP,
+Ljubljana,Slovenia,46.05528831,14.51496903,284961,Ljubljana,SI,SVN,Osrednjeslovenska
+Honiara,Solomon Islands,-9.437994295,159.9497657,66313,Honiara,SB,SLB,Guadalcanal
+Mogadishu,Somalia,2.066681334,45.36667761,987694,Mogadishu,SO,SOM,Banaadir
+Hargeysa,Somaliland,9.560022399,44.06531002,362447,Hargeysa,-99,SOL,
+Cape Town,South Africa,-33.92001097,18.43498816,2823929,Cape Town,ZA,ZAF,Western Cape
+Grytviken,South Georgia and the Islands,-54.28057697,-36.50798893,99,Grytviken,GS,SGS,
+Seoul,South Korea,37.5663491,126.999731,9796000,Seoul,KR,KOR,Seoul
+Wau,South Sudan,7.699980895,27.98996049,99158,Wau,SS,SSD,West Bahr-al-Ghazal
+Barcelona,Spain,41.38329958,2.183370319,3250797.5,Barcelona,ES,ESP,Cataluña
+Madrid,Spain,40.40002626,-3.683351686,2808718.5,Madrid,ES,ESP,Comunidad de Madrid
+Colombo,Sri Lanka,6.931965758,79.85775061,217000,Colombo,LK,LKA,Colombo
+Khartoum,Sudan,15.58807823,32.53417924,3364323.5,Khartoum,SD,SDN,Khartoum
+Paramaribo,Suriname,5.83503013,-55.16703089,238963,Paramaribo,SR,SUR,Paramaribo
+Longyearbyen,Svalbard and Jan Mayen Islands,78.21668439,15.5499963,1232,Longyearbyen,SJ,SJM,Svalbard
+Mbabane,Swaziland,-26.31665078,31.13333451,83178,Mbabane,SZ,SWZ,Hhohho
+Stockholm,Sweden,59.35075995,18.09733473,1258654.5,Stockholm,SE,SWE,Stockholm
+Geneva,Switzerland,46.21000755,6.140028034,716192.5,Geneva,CH,CHE,Genève
+Damascus,Syria,33.500034,36.29999589,2466000,Damascus,SY,SYR,Damascus
+Taipei,Taiwan,25.03583333,121.5683333,4759522.5,Taipei,TW,TWN,Taipei City
+Dushanbe,Tajikistan,38.56003522,68.77387935,882822,Dushanbe,TJ,TJK,Tadzhikistan Territories
+Dar es Salaam,Tanzania,-6.800012595,39.26834184,2814326,Dar es Salaam,TZ,TZA,Dar-Es-Salaam
+Bangkok,Thailand,13.74999921,100.5166447,5904238,Bangkok,TH,THA,Bangkok Metropolis
+Nassau,The Bahamas,25.08339012,-77.35004378,194453,Nassau,BS,BHS,
+Banjul,The Gambia,13.45387646,-16.59170149,38841.5,Banjul,GM,GMB,Banjul
+Lome,Togo,6.131937072,1.222757119,1100850,Lome,TG,TGO,Maritime
+Nukualofa,Tonga,-21.13851236,-175.2205645,33139,Nukualofa,TO,TON,
+Port-of-Spain,Trinidad and Tobago,10.65199709,-61.51703089,171982.5,Port-of-Spain,TT,TTO,Port of Spain
+Tunis,Tunisia,36.80277814,10.1796781,1570476.5,Tunis,TN,TUN,Tunis
+Istanbul,Turkey,41.10499615,29.01000159,10003305,Istanbul,TR,TUR,Istanbul
+Ashgabat,Turkmenistan,37.94999493,58.38329911,652841,Ashgabat,TM,TKM,Ahal
+Grand Turk,Turks and Caicos Islands,21.46642743,-71.13597864,4760.5,Grand Turk,TC,TCA,
+Funafuti,Tuvalu,-8.516651999,179.2166471,4749,Funafuti,TV,TUV,
+Kampala,Uganda,0.316658955,32.58332353,1386594.5,Kampala,UG,UGA,Kampala
+Kiev,Ukraine,50.43336733,30.51662797,2185754,Kiev,UA,UKR,Kiev
+Dubai,United Arab Emirates,25.22999615,55.27997432,1258173.5,Dubai,AE,ARE,Dubay
+London,United Kingdom,51.49999473,-0.116721844,7994104.5,London,GB,GBR,Westminster
+Las Vegas,USA,35.59701194,-105.2225027,15521,Las Vegas,US,USA,New Mexico
+Seattle,USA,47.57000205,-122.339985,1821684.5,Seattle,US,USA,Washington
+Houston,USA,29.81997438,-95.33997929,4053287,Houston,US,USA,Texas
+Chicago,USA,41.82999066,-87.75005497,5915976,Chicago,US,USA,Illinois
+Los Angeles,USA,33.98997825,-118.1799805,8097410,Los Angeles,US,USA,California
+New York,USA,40.74997906,-73.98001693,13524139,New York,US,USA,New York
+Christiansted,United States Virgin Islands,17.75037518,-64.749986,32543,Christiansted,VI,VIR,
+Montevideo,Uruguay,-34.85804157,-56.17105229,759162,Montevideo,UY,URY,Montevideo
+Tashkent,Uzbekistan,41.31170188,69.29493282,2081014,Tashkent,UZ,UZB,Tashkent
+Port Vila,Vanuatu,-17.7333504,168.3166406,39970.5,Port-Vila,VU,VUT,Shefa
+Vatican City,Vatican (Holy Sea),41.90001223,12.44780839,832,Vatican City,VA,VAT,Lazio
+Caracas,Venezuela,10.50099855,-66.91703719,2400339.5,Caracas,VE,VEN,Distrito Capital
+Ho Chi Minh City,Vietnam,10.78002545,106.6950272,4390665.5,Ho Chi Minh City,VN,VNM,Ho Chi Minh City
+Bir Lehlou,Western Sahara,26.11916669,-9.652522218,350,Bir Lehlou,EH,SAH,
+Sanaa,Yemen,15.3547333,44.20659338,1921926.5,Sanaa,YE,YEM,Amanat Al Asimah
+Lusaka,Zambia,-15.41664427,28.28332759,1297720,Lusaka,ZM,ZMB,Lusaka
+Chitungwiza,Zimbabwe,-18.00000079,31.10000321,331071,Chitungwiza,ZW,ZWE,Harare

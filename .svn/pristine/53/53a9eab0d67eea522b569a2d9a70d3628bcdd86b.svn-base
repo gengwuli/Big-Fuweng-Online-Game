@@ -1,0 +1,116 @@
+package gl22_hl57.game_client.controller;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
+
+import gl22_hl57.game_client.model.*;
+import gl22_hl57.game_client.view.*;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.render.PointPlacemark;
+
+/**
+ * @author hengyilin
+ */
+public class GameController implements Serializable {
+
+	private static final long serialVersionUID = -8820261252445398828L;
+
+	protected GameModel gameModel;
+	
+	protected GameView<Avatar> gameView;
+	
+	protected UUID gameId;
+	
+	public GameController() {
+		
+		gameModel = new GameModel(new IGameModel2ViewAdapter() {
+
+			@Override
+			public void promptDialog(String title, String context, boolean isSelection) {
+				gameView.promptDialog(title, context, isSelection);
+			}
+
+			@Override
+			public void updateMoney(int money) {
+				gameView.updateMoney(money);
+			}
+
+			@Override
+			public void goTo(Position pos, boolean isFlying) {
+				gameView.goTo(pos, isFlying);
+			}
+
+			@Override
+			public void startTurn() {
+				gameView.toggleTurns(true);
+			}
+
+			@Override
+			public void update() {
+				gameView.revalidate();
+				gameView.repaint();
+			}
+
+			@Override
+			public void showEndGameMsg(String msg, String title, boolean didWin) {
+				gameView.endGame(msg, title, didWin);
+			}
+			
+		});
+		
+		gameView = new GameView<Avatar>(new IGameView2ModelAdapter<Avatar>() {
+
+			@Override
+			public List<? extends PointPlacemark> getCityMarkers() {
+				return gameModel.getCityMarkers();
+			}
+
+			@Override
+			public List<? extends PointPlacemark> getAvatarMarkers() {
+				return gameModel.getAvatarMarkers();
+			}
+
+			@Override
+			public void moveAvatars(int steps) {
+				gameModel.moveAvatar(steps);
+			}
+
+			@Override
+			public void checkCityStatus() {
+				gameModel.checkCityStatus();
+			}
+
+			@Override
+			public void buyTheCity() {
+				gameModel.buyTheCity();
+			}
+
+			@Override
+			public Avatar[] getTeammates() {
+				return gameModel.getTeammates();
+			}
+
+			@Override
+			public void finishedTurn() {
+				gameModel.finishedTurn();
+			}
+
+			@Override
+			public void shareMoney(Avatar withWhom, int amountShared) {
+				gameModel.shareMoney(withWhom, amountShared);
+			}
+
+			@Override
+			public void showDice(int...dices) {
+				gameModel.showDice(dices);
+			}
+
+		});
+	}
+	
+	public void start() {
+		gameModel.start();
+		gameView.start();
+	}
+}

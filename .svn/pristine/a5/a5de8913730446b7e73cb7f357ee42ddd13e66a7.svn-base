@@ -1,0 +1,56 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
+import common.IChatServer;
+import common.msg.IChatMsg;
+import gl22_hl57.game_client.model.CityData;
+import gl22_hl57.game_client.model.Team;
+
+public class GameInfo implements IChatMsg {
+
+	private static final long serialVersionUID = 6660449293455937998L;
+
+	private UUID uuid;
+	
+	private HashSet<IChatServer> players = new HashSet<>();
+	
+	private List<Team> teams = new ArrayList<>();
+	
+	private List<CityData> cities = new ArrayList<>();
+	
+	private IChatServer receiver = null;
+	
+	public GameInfo(UUID gameUUID, HashSet<IChatServer> gamePlayers, List<Team> gameTeams, List<CityData> cities) {
+		uuid = gameUUID;
+		players.addAll(gamePlayers);
+		teams.addAll(gameTeams);
+		this.cities = cities;
+	}
+	
+	public UUID getUUID() {
+		return uuid;
+	}
+	
+	public List<CityData> getCities() {
+		return cities;
+	}
+	
+	public IChatServer[] getPlayers() {
+		return players.toArray(new IChatServer[0]);
+	}
+	
+	public Team[] getTeams() {
+		return teams.toArray(new Team[0]);
+	}
+	
+	public void setReceiver(IChatServer player) {
+		receiver = player;
+	}
+
+	public IChatServer getReceiver() {
+		return receiver;
+	}
+}

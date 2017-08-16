@@ -1,0 +1,53 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import java.awt.Color;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+
+public class DiceCmd extends AOurDataPacketAlgoCmd<DiceMsg, IChatServer> {
+
+	private static final long serialVersionUID = -7613456112635497896L;
+
+	ICmd2ModelAdapter cmd2ModelAdapter;
+	
+	public DiceCmd(ICmd2ModelAdapter cmd2ModelAdapter) {
+		this.cmd2ModelAdapter = cmd2ModelAdapter;
+	}
+	
+	@SuppressWarnings("serial")
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<DiceMsg, IChatServer> host, Object... params) {
+		ImageIcon imageIcon = host.getData().getContent();
+		new JFrame() {
+			{
+				setUndecorated(true);
+				setAlwaysOnTop(true);
+				setBackground(new Color(0, 0, 0, 0));
+				try {
+					add(new JLabel(imageIcon));
+					imageIcon.getImage().flush();
+				} catch (Exception e) {
+					System.out.println("Show dice failed!");
+					e.printStackTrace();
+				}
+				pack();
+				setLocationRelativeTo(null);
+				setVisible(true);
+			}
+		};
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		
+	}
+
+}

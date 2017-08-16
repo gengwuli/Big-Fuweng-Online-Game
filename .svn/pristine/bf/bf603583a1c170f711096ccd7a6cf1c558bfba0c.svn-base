@@ -1,0 +1,68 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import java.awt.Color;
+import java.rmi.RemoteException;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.IComponentFactory;
+import common.IUser;
+import common.OurDataPacket;
+
+public class ImageCmd extends AOurDataPacketAlgoCmd<ImageMsg, IChatServer> {
+
+	private static final long serialVersionUID = -6101438227439368099L;
+
+	transient ICmd2ModelAdapter cmd2ModelAdpter;
+
+	public ImageCmd(ICmd2ModelAdapter cmd2ModelAdpter) {
+		this.cmd2ModelAdpter = cmd2ModelAdpter;
+	}
+
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<ImageMsg, IChatServer> host, Object... params) {
+		ImageIcon img = host.getData().getContent();
+		cmd2ModelAdpter.buildComponentInScrollable(new IComponentFactory() {
+			@Override
+			public JComponent make() {
+				try {
+					IUser user = host.getSender().getUser();
+					JLabel label = new JLabel(user.getName() + "@" + user.getIP() + ":");
+					label.setOpaque(true);
+					label.setBackground(Color.white);
+					return label;
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				return new JLabel("Error!");
+			}
+		});
+		
+		cmd2ModelAdpter.buildComponentInNonScrollable(new IComponentFactory() {
+			public JComponent make() {
+				return new JLabel(img);
+			}
+		});
+		
+		cmd2ModelAdpter.buildComponentInScrollable(new IComponentFactory() {
+			@Override
+			public JComponent make() {
+				return (JComponent) Box.createVerticalStrut(10);
+			}
+		});
+//		
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpter) {
+		this.cmd2ModelAdpter = cmd2ModelAdpter;
+	}
+
+}

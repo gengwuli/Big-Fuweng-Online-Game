@@ -1,0 +1,60 @@
+package gl22_hl57.model;
+
+import java.rmi.RemoteException;
+import java.util.HashSet;
+import java.util.UUID;
+import common.IChatServer;
+import common.IChatroom;
+import common.OurDataPacket;
+import common.msg.IChatMsg;
+
+public class ChatRoom implements IChatroom {
+
+	private static final long serialVersionUID = -6713318093867654346L;
+	String name;
+	UUID id;
+	HashSet<IChatServer> chatservers;
+
+	public ChatRoom(String name) {
+		this.name = name;
+		this.id = UUID.randomUUID();
+		chatservers = new HashSet<>();
+	}
+
+	@Override
+	public UUID getId() {
+		return id;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public HashSet<IChatServer> getChatServers() {
+		return chatservers;
+	}
+
+	@Override
+	public boolean addChatServer(IChatServer chatStub) {
+		return chatservers.add(chatStub);
+	}
+
+	@Override
+	public boolean removeChatServer(IChatServer chatServer) {
+		System.out.println("In Chatroom, removeChatServer()");
+		return chatservers.remove(chatServer);
+	}
+
+	@Override
+	public <S> void send(OurDataPacket<? extends IChatMsg, S> dp) {
+		try {
+			for (IChatServer chatServer : chatservers) {
+				chatServer.receive(dp);
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+}

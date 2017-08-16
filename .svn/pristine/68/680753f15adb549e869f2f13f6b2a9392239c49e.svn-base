@@ -1,0 +1,21 @@
+package gl22_hl57.model.msg.user;
+
+import common.IChatroom;
+import common.msg.user.IInvite2RoomMsg;
+
+public class Invite2RoomMsg implements IInvite2RoomMsg {
+
+	private static final long serialVersionUID = 8561323740954386313L;
+
+	IChatroom chatroom;
+	
+	public Invite2RoomMsg(IChatroom chatroom) {
+		this.chatroom = chatroom;
+	}
+	
+	@Override
+	public IChatroom getChatroom() {
+		return chatroom;
+	}
+
+}

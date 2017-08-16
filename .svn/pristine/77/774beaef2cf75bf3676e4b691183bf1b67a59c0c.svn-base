@@ -1,0 +1,13 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+
+public class StartGameMsg extends AGameMsg {
+
+	private static final long serialVersionUID = 1077739921392340677L;
+	
+	public StartGameMsg(UUID gameId) {
+		super(gameId);
+	}
+	
+}

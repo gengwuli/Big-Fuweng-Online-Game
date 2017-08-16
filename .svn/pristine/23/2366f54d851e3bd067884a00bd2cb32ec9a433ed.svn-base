@@ -1,0 +1,26 @@
+package gl22_hl57.game_client.view;
+
+import java.util.List;
+import gov.nasa.worldwind.render.PointPlacemark;
+
+public interface IGameView2ModelAdapter<TAvatarListItem> {
+	
+	public List<? extends PointPlacemark> getCityMarkers();
+	
+	public List<? extends PointPlacemark> getAvatarMarkers();
+	
+	public void moveAvatars(int steps);
+	
+	public void checkCityStatus();
+	
+	public void buyTheCity();
+	
+	public TAvatarListItem[] getTeammates();
+	
+	public void finishedTurn();
+	
+	public void shareMoney(TAvatarListItem withWhom, int amountShared);
+
+	//Added by gengwu
+	public void showDice(int steps);
+}

@@ -1,0 +1,10 @@
+package gl22_hl57.controller;
+
+/**
+ * Mini controller, just a stub
+ * Instantiation is in the main controller
+ * @author Gengwu Li, Zhaohan Jia
+ * @version 1.0, Nov 14, 2016
+ */
+public interface MiniController {
+};

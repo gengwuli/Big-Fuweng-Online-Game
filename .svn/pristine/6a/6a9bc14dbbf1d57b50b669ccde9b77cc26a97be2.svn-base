@@ -1,0 +1,159 @@
+package gl22_hl57.game_client.model;
+
+import java.awt.Color;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import common.IChatServer;
+import common.OurDataPacket;
+import common.msg.IChatMsg;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.Offset;
+import gov.nasa.worldwind.render.PointPlacemark;
+import gov.nasa.worldwind.render.PointPlacemarkAttributes;
+import provided.datapacket.DataPacket;
+
+public class Avatar extends PointPlacemark implements Serializable {
+
+	private static final long serialVersionUID = 4506503661009020494L;
+
+	public static final Avatar DEFAULT_AVATAR = new Avatar();
+	
+	private Avatar() {
+		super(Position.fromDegrees(0d, 0d, 0d));
+		myStub = null;
+		name = "N/A";
+		myId = UUID.nameUUIDFromBytes(new String("HL57_GL22_DEFAULT_AVATAR").getBytes());
+		team = Team.DEFAULT_TEAM;
+		money = 0;
+		isBankrupted = false;
+	}
+	
+	private final IChatServer myStub;
+	
+	private String name;
+	
+	private Team team;
+	
+//	private final UUID teamId;
+	
+	private UUID myId;
+	
+	private int money;
+	
+	private boolean isBankrupted;
+	
+	public Avatar(IChatServer stub, Team gameTeam, Position origin) {
+		super(origin);
+		myStub = stub;
+		try {
+			name = stub.getUser().getName();
+			myId = stub.getUser().getId();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			System.out.println("Failed getting name/UUID from IPlayer stub while constructing an avatar,"
+					+ "using 'anonymous' as default username and randomUUID instead, remoteException: " + e);
+			name = "anonymous";
+			myId = UUID.randomUUID();
+		}
+		team = gameTeam;
+		money = 200;
+		isBankrupted = false;
+		initMarker();
+	}
+	
+	private void initMarker() {
+        this.setLabelText(name);
+        this.setLineEnabled(false);
+        this.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
+        this.setEnableBatchPicking(true); // enable label picking for this placemark
+        // set up avatar(PointPlacemark)'s attribues
+        PointPlacemarkAttributes ppAttrs = new PointPlacemarkAttributes();
+        ppAttrs.setLabelMaterial(new Material(this.getTeamColor()));
+        ppAttrs.setImageAddress("../resources/m_avatar.png");
+        ppAttrs.setImageColor(this.getTeamColor()); // image color for different states
+        ppAttrs.setScale(0.3);
+        ppAttrs.setImageOffset(new Offset(100d, 30d, AVKey.PIXELS, AVKey.PIXELS));
+        ppAttrs.setLabelOffset(new Offset(0.9d, 0d, AVKey.FRACTION, AVKey.FRACTION));
+        this.setAttributes(ppAttrs);
+	}
+
+	public void receive(OurDataPacket<? extends IChatMsg, IChatServer> dp) throws RemoteException {
+		myStub.receive(dp);
+	}
+	
+	public int getMoney() {
+		return money;
+	}
+
+	public void changeMoney(int amountChanged) {
+		money += amountChanged;
+		if (money<0) isBankrupted = true; 
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public List<Avatar> getTeammates() {
+		List<Avatar> teamMembers = new ArrayList(team.getMembers());
+		int i=0, memberNum = teamMembers.size();
+		for (; i<memberNum; i++) {
+			if (teamMembers.get(i)==this) 
+				break;
+		}
+		if (i<memberNum) // remove myself
+			teamMembers.remove(i);
+		return teamMembers;
+	}
+	
+	public UUID getTeamId() {
+		return team.getTeamId();
+	}
+	
+	public Color getTeamColor() {
+		return team.getTeamColor();
+	}
+
+	public UUID getMyId() {
+		return myId;
+	}
+
+	public IChatServer getMyStub() {
+		return myStub;
+	}
+	
+	public boolean isBankrupted() {
+		return isBankrupted;
+	}
+	
+	@Override
+	public String toString() {
+		return name + " $" + money;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((myId == null) ? 0 : myId.hashCode());
+		result = prime * result + ((myStub == null) ? 0 : myStub.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((team == null) ? 0 : team.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null || !(obj instanceof Avatar))
+			return false;
+		return this.hashCode() == obj.hashCode();
+	}
+
+}

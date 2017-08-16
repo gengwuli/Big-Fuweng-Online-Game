@@ -1,0 +1,75 @@
+package gl22_hl57.model;
+
+import java.rmi.RemoteException;
+import java.util.HashSet;
+import java.util.UUID;
+import common.IChatServer;
+import common.IChatroom;
+import common.IUser;
+import common.OurDataPacket;
+import common.msg.IUserMsg;
+import common.msg.chat.IAddMeMsg;
+import common.msg.user.IInvite2RoomMsg;
+import gl22_hl57.model.adpt.IUser2ModelAdpt;
+import gl22_hl57.model.msg.chat.AddMeMsg;
+
+/**
+ * User
+ * @author Gengwu Li, Zhaohan Jia
+ * @version 1.0, Nov 14, 2016
+ */
+public class User implements IUser {
+	String username;
+	UUID id;
+	String ip;
+	HashSet<IChatroom> chatrooms;
+	IUser2ModelAdpt user2ModelAdpt;
+	
+	public User(String username, String ip, IUser2ModelAdpt user2ModelAdpt) {
+		this.username = username;
+		this.ip = ip;
+		this.user2ModelAdpt = user2ModelAdpt;
+		chatrooms = new HashSet<>();
+	}
+	
+	@Override
+	public <S> void receive(OurDataPacket<? extends IUserMsg, S> dp) throws RemoteException {
+		IInvite2RoomMsg invite2RoomMsg = (IInvite2RoomMsg) dp.getData();
+		IChatroom chatroom = invite2RoomMsg.getChatroom();
+		ChatServer chatServer = new ChatServer(this, chatroom);
+		user2ModelAdpt.createMiniMVC(chatServer);
+		OurDataPacket<IAddMeMsg, IChatServer> dataPacket = 
+				new OurDataPacket<IAddMeMsg, IChatServer>(IAddMeMsg.class, new AddMeMsg(), chatServer);
+		chatroom.send(dataPacket);
+	}
+
+	@Override
+	public void connectBack(IUser userStub) throws RemoteException {
+		// What to to with this?
+	}
+
+	@Override
+	public UUID getId() throws RemoteException {
+		return id;
+	}
+
+	@Override
+	public String getName() throws RemoteException {
+		return username;
+	}
+
+	@Override
+	public String getIP() throws RemoteException {
+		return ip;
+	}
+
+	@Override
+	public HashSet<IChatroom> getChatrooms() throws RemoteException {
+		return chatrooms;
+	}
+	
+	public boolean addRoom(IChatroom room) {
+		return chatrooms.add(room);
+	}
+	
+}

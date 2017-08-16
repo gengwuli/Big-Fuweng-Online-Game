@@ -1,0 +1,285 @@
+package gl22_hl57.game_client.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.globes.Earth;
+import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.BasicShapeAttributes;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.Path;
+import gov.nasa.worldwind.render.PointPlacemark;
+import gov.nasa.worldwind.render.ShapeAttributes;
+
+public class GameView<TAvatarListItem> extends JPanel {
+
+
+	private static final long serialVersionUID = 4021228152209414813L;
+	private JPanel contentPane  = new JPanel();
+	private transient GameMapPanel map = new GameMapPanel(Earth.class);
+	private JPanel pnlCtrl = new JPanel();
+	private JButton btnRoll = new JButton("Roll");
+	private JButton btnShareMoney = new JButton("Share Money");
+	private JLabel lblSteps = new JLabel("Steps:");
+//	private JLabel lblTeammates = new JLabel("Teammates:");
+//	private JLabel lblSplit = new JLabel("\t\t\t\t\t\t");
+//	private JComboBox<TAvatarListItem> drplistTeammates = new JComboBox<TAvatarListItem>();
+	private JTextField tfSteps = new JTextField("6");
+	private JLabel lblMoney = new JLabel("Money:");
+	private JTextField tfMoney = new JTextField("0");
+	private static Random randomno;
+	private JScrollPane scroll = new JScrollPane();
+	private JList<TAvatarListItem> avatarlist = new JList<TAvatarListItem>(new DefaultListModel<TAvatarListItem>());
+	private ImageIcon image;
+	private IGameView2ModelAdapter<TAvatarListItem> model;
+				
+	public GameView(IGameView2ModelAdapter<TAvatarListItem> adapter) {
+		model = adapter;
+	}
+	
+	/**
+	 * Create the frame.
+	 */
+	public GameView() {
+	}
+		
+	@SuppressWarnings("unchecked")
+	public void start() {
+		randomno = new Random(System.currentTimeMillis());
+		map.start();
+		initGUI();
+		initCityRoutes(); 
+        List<? extends PointPlacemark> avatars = model.getAvatarMarkers();
+		initAvatars(avatars);
+		initScoreboard((List<TAvatarListItem>)avatars);
+//		initTeammateDropList();
+		toggleTurns(false);
+		setVisible(true);
+		this.revalidate();
+		this.repaint();
+	}
+	
+	public void initGUI() {
+		setLayout(new BorderLayout(0, 0));
+		try {
+			image = new ImageIcon(new URL("https://res.cloudinary.com/hdjcahswx/image/upload/v1481171340/bjex3n9cy3roydz1ofd9.png"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.out.println("Failed loading logo icon.");
+		}
+//		setBounds(100, 100, 450, 300);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		this.add(contentPane, BorderLayout.CENTER);
+		/** map **/
+		map.setBackground(Color.black);
+		map.setBorder(new TitledBorder(null, "Game Map", TitledBorder.LEADING, TitledBorder.CENTER, null, Color.white));
+		contentPane.add(map, BorderLayout.CENTER);
+		
+		/** control panel **/
+		btnRoll.addActionListener(new rollActionListener());
+		btnRoll.setToolTipText("In your turn, click this to travel on the globe based on the steps you roll.");
+		btnShareMoney.addActionListener(new shareActionListener());
+		lblSteps.setForeground(Color.WHITE);
+		tfSteps.setEnabled(false);
+		tfSteps.setColumns(3);
+		tfSteps.setHorizontalAlignment(JTextField.CENTER);
+		tfSteps.setToolTipText("Steps you traveled on the globe in your turn.");
+		tfMoney.setEnabled(false);
+		tfMoney.setColumns(5);
+		tfMoney.setHorizontalAlignment(JTextField.CENTER);
+		tfMoney.setToolTipText("Amount of money you have left.");
+//		lblTeammates.setForeground(Color.WHITE);
+//		drplistTeammates.setToolTipText("Choose a teammate you would like to share your money.");
+		btnShareMoney.setToolTipText("In your turn, click this to share your money with the teammate you selected.");
+		pnlCtrl.add(lblSteps);
+		pnlCtrl.add(tfSteps);
+		pnlCtrl.add(btnRoll);
+		pnlCtrl.add(lblMoney);
+		pnlCtrl.add(tfMoney);
+//		pnlCtrl.add(lblSplit);
+//		pnlCtrl.add(lblTeammates);
+//		pnlCtrl.add(drplistTeammates);
+		pnlCtrl.add(btnShareMoney);
+		pnlCtrl.setBorder(new EmptyBorder(0,0,0,0));
+		pnlCtrl.setBackground(Color.BLACK);
+		lblMoney.setForeground(Color.WHITE);
+		contentPane.add(pnlCtrl, BorderLayout.SOUTH);
+		
+		// score board
+		contentPane.add(scroll, BorderLayout.EAST);
+		avatarlist.setPreferredSize(new Dimension(100,50));
+		avatarlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		avatarlist.setBorder(null);
+		
+		scroll.setBorder(new EmptyBorder(0,0,0,0));
+		scroll.setViewportView(avatarlist);
+		scroll.setViewportBorder(new TitledBorder(null, "Score Board", TitledBorder.LEADING, TitledBorder.TOP, null, Color.white));
+		scroll.setBackground(Color.BLACK);
+		
+
+	}
+
+	class rollActionListener implements ActionListener, Serializable {
+		private static final long serialVersionUID = 488865480175102094L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// stop any more actions of my turn
+			toggleTurns(false);
+			// calcualte steps to move
+			int steps = randomno.nextInt(12)+1; // get steps (1-12)
+			tfSteps.setText(Integer.toString(steps)); // show steps in text field
+			model.moveAvatars(steps);
+			// pay or buy?
+			model.checkCityStatus();
+			
+			//Added by Gengwu 
+			model.showDice(steps);
+		}
+	}
+	
+	class shareActionListener implements ActionListener, Serializable {
+
+		private static final long serialVersionUID = -602055855597737536L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int maxSharableMoney = Integer.parseInt(tfMoney.getText());
+			if (maxSharableMoney==0) return;
+			TAvatarListItem[] items = model.getTeammates();
+//			if (items==null || items.length==0) return;
+			// show select teammate dialog
+			JLabel teammatelabel = new JLabel("Which teammate would you like to share your money?", null, JLabel.CENTER);
+			@SuppressWarnings("unchecked")
+			TAvatarListItem item = (TAvatarListItem) JOptionPane.showInputDialog(null, teammatelabel, "Share Money", JOptionPane.PLAIN_MESSAGE, image, items, null);
+			if (item==null) return;
+			// show select amount dialog
+			List<Integer> sharableAmount = new ArrayList<>();
+			for (int i=10; i<=maxSharableMoney; i+=10)
+				sharableAmount.add(i);
+			JLabel label = new JLabel("How much money would you want to share with "+item+"?", null, JLabel.CENTER);
+			Integer amountShared = (Integer) JOptionPane.showInputDialog(null, label, "Share Money", JOptionPane.PLAIN_MESSAGE, image, sharableAmount.toArray(new Integer[0]), sharableAmount.get(0));
+			if (amountShared==null) return;
+			// actually share money
+			System.out.println("Shared $"+amountShared+" with "+item);
+			model.shareMoney(item, amountShared);
+		}
+	}
+
+		
+	public void goTo(Position pos, boolean isFlying) {
+		map.setPosition(pos, isFlying); // fly animation the globe to next city
+	}
+	
+	public void promptDialog(String title, String context, boolean isSelection) {
+		JLabel label = new JLabel(context, null, JLabel.CENTER);
+		if (isSelection) {
+			int opt = JOptionPane.showConfirmDialog(null, context, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, image);
+			if (opt==JOptionPane.YES_OPTION)
+				model.buyTheCity();
+		} else 
+			JOptionPane.showMessageDialog(null, label, title, JOptionPane.PLAIN_MESSAGE, image);
+		// pass turn to the next guy
+		model.finishedTurn();
+	}
+	
+	private void initScoreboard(List<TAvatarListItem> items) {
+		DefaultListModel<TAvatarListItem> listModel = (DefaultListModel<TAvatarListItem>) avatarlist.getModel();
+		for (TAvatarListItem item : items)
+			listModel.addElement(item);
+	}
+	
+//	private void initTeammateDropList() {
+//		for (TAvatarListItem item : model.getTeammates())
+//			drplistTeammates.addItem(item);
+//	}
+	
+	public void updateMoney(int money) {
+		tfMoney.setText(Integer.toString(money));
+	}
+
+	public void toggleTurns(boolean isMyTurn) {
+		btnRoll.setEnabled(isMyTurn);
+		btnShareMoney.setEnabled(isMyTurn);
+	}
+	
+	/**
+	 * Init all avatars on the globe
+	 * @param startCity
+	 */
+	private void initAvatars(List<? extends PointPlacemark> avatars) {
+        // import avatars(PointPlacemarks) 
+        RenderableLayer avatarlayer = new RenderableLayer();
+        for (PointPlacemark avatar : avatars) 
+            avatarlayer.addRenderable(avatar); // add avatars to layer
+		map.addLayer(avatarlayer); // add layer to map
+	}
+	
+	/**
+	 * init routes and cities markers on the globe
+	 */
+	private void initCityRoutes() {		
+		List<? extends PointPlacemark> cities = model.getCityMarkers();
+		// route layer
+        RenderableLayer routelayer = new RenderableLayer();
+        RenderableLayer citylayer = new RenderableLayer();
+        ArrayList<Position> pathPositions = new ArrayList<Position>();
+		// iterate city list
+        for (PointPlacemark city : cities) {
+        	citylayer.addRenderable(city); // add city marker to layer
+	        pathPositions.add(city.getPosition()); // build path connecting cities
+		}
+        pathPositions.add(cities.get(0).getPosition()); // connect back to origin forming closed path
+        Path path = new Path(pathPositions);
+        // attributes for path       
+        ShapeAttributes attrs = new BasicShapeAttributes();
+//      attrs.setOutlineMaterial(new Material(WWUtil.makeRandomColor(null)));
+        attrs.setInteriorMaterial(new Material(Color.LIGHT_GRAY));
+        attrs.setOutlineMaterial(new Material(Color.LIGHT_GRAY)); // path color
+        attrs.setOutlineWidth(5d);
+        path.setAttributes(attrs);
+        path.setVisible(true);
+        path.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
+        path.setPathType(AVKey.RHUMB_LINE);
+        routelayer.addRenderable(path); // add route path to layer
+        // Add layers to the model.
+        map.addLayer(routelayer);
+        map.addLayer(citylayer);
+	}
+	
+	public void endGame(String title, String msg, boolean didWin) {
+		JLabel label = new JLabel(msg, null, JLabel.CENTER);
+		JOptionPane.showMessageDialog(null, label, title, JOptionPane.PLAIN_MESSAGE, image);
+		this.setEnabled(false);
+		setVisible(false);
+		map.stopWWD();
+	}
+	
+}
+

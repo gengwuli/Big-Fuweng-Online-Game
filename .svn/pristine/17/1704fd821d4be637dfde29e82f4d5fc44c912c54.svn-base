@@ -1,0 +1,33 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+import common.msg.IChatMsg;
+
+public class CityUpdateInfo implements IChatMsg {
+
+	private static final long serialVersionUID = -3732148905819291372L;
+
+	private UUID gameId;
+
+	private int cityIdx;
+	
+	private UUID ownerId;
+	
+	public CityUpdateInfo(UUID gameId, int updatedCityIdx, UUID newOwnerId) {
+		this.gameId = gameId;
+		cityIdx = updatedCityIdx;
+		ownerId = newOwnerId;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public int getCityIdx() {
+		return cityIdx;
+	}
+
+	public UUID getOwnerId() {
+		return ownerId;
+	}
+}

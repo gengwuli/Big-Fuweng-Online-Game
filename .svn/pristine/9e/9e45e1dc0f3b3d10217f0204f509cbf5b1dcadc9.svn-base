@@ -1,0 +1,29 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import java.util.UUID;
+import common.msg.IChatMsg;
+
+public class DiceMsg implements IChatMsg {
+	private static final long serialVersionUID = -3343768810980848417L;
+	UUID gameId;
+	String[] imageIcons;
+	int steps;
+
+	public DiceMsg(UUID gameUUID, int steps, String... imageIcons) {
+		this.gameId = gameUUID;
+		this.imageIcons = imageIcons;
+		this.steps = steps;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public int getSteps() {
+		return steps;
+	}
+
+	public String[] getContent() {
+		return imageIcons;
+	}
+}

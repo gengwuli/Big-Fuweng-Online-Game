@@ -1,0 +1,23 @@
+package gl22_hl57.game_client.model;
+
+import gov.nasa.worldwind.geom.Position;
+
+public interface IGameModel2ViewAdapter {
+	
+	/**
+	 * @param title
+	 * @param context
+	 * @param isSelected true if ConfirmDialog, false if MessageDialog
+	 */
+	public void promptDialog(String title, String context, boolean isSelection);
+	
+	public void updateMoney(int money);
+	
+	public void goTo(Position pos, boolean isFlying);
+
+	public void startTurn();
+	
+	public void update();
+	
+	public void showEndGameMsg(String title, String context, boolean didWin);
+}

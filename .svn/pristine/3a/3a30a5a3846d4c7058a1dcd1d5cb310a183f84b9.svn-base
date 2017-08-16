@@ -1,0 +1,43 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+import common.msg.IChatMsg;
+
+/**
+ * A game message which contains update info of aa city in the game
+ * @author hengyilin
+ */
+public class CityUpdateInfo implements IChatMsg {
+
+	/**
+	 * Generated serial version id
+	 */
+	private static final long serialVersionUID = -3732148905819291372L;
+
+	/**
+	 * UUID of the game
+	 */
+	private UUID gameId;
+
+	private int cityIdx;
+	
+	private UUID ownerId;
+	
+	public CityUpdateInfo(UUID gameId, int updatedCityIdx, UUID newOwnerId) {
+		this.gameId = gameId;
+		cityIdx = updatedCityIdx;
+		ownerId = newOwnerId;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public int getCityIdx() {
+		return cityIdx;
+	}
+
+	public UUID getOwnerId() {
+		return ownerId;
+	}
+}

@@ -1,0 +1,68 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.io.IOException;
+import java.util.UUID;
+import common.msg.IChatMsg;
+import gov.nasa.worldwind.geom.Position;
+
+public class AvatarUpdateInfo implements IChatMsg {
+
+	private static final long serialVersionUID = -5493378342110442677L;
+	
+	private UUID gameId;
+	
+	private UUID id;
+	
+	private transient Position pos;
+	
+	private Integer money;
+		
+	public AvatarUpdateInfo(UUID gameId, UUID avatarId, Position newPos, Integer newMoney) {
+		this.gameId = gameId;
+		id = avatarId;
+		pos = newPos;
+		money = newMoney;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public Position getPos() {
+		return pos;
+	}
+
+	public Integer getMoney() {
+		return money;
+	}
+	
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.defaultWriteObject();
+		if (pos!=null) {
+			out.writeDouble(pos.getAltitude());
+			out.writeDouble(pos.getLatitude().degrees);
+			out.writeDouble(pos.getLongitude().degrees);
+		}
+	}
+	
+	private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject(); 
+		try {
+	        double alt = in.readDouble();
+			double lat = in.readDouble();
+			double lng = in.readDouble();
+			this.pos = Position.fromDegrees(lat, lng, alt);
+        }
+		catch (Exception e) 
+        { 	
+			System.out.println("Position is null");
+        }
+	}
+
+
+}
+

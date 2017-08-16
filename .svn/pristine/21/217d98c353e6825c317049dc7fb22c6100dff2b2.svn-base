@@ -1,0 +1,62 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import java.awt.Color;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+
+public class DiceCmd extends AOurDataPacketAlgoCmd<DiceMsg, IChatServer> {
+
+	private static final long serialVersionUID = -7613456112635497896L;
+
+	transient ICmd2ModelAdapter cmd2ModelAdapter;
+	
+	public DiceCmd(ICmd2ModelAdapter cmd2ModelAdapter) {
+		this.cmd2ModelAdapter = cmd2ModelAdapter;
+	}
+	
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<DiceMsg, IChatServer> host, Object... params) {
+//		ImageIcon imageIcon = host.getData().getContent();
+//		imageIcon.getImage().flush();
+		ImageIcon imageIcon = null;
+		try {
+			imageIcon = new ImageIcon(new URL("https://res.cloudinary.com/hdjcahswx/image/upload/v1481233088/eohby3yobw89n6w49rcd.gif"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		JFrame frame = new JFrame();
+		frame.setUndecorated(true);
+		frame.setAlwaysOnTop(true);
+		frame.setBackground(new Color(0, 0, 0,0));
+		frame.add(new JLabel(imageIcon));
+		imageIcon.getImage().flush();
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				frame.dispose();
+			}
+		}, 4000);
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.cmd2ModelAdapter = cmd2ModelAdpt;
+	}
+
+}

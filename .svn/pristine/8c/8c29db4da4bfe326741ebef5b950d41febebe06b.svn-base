@@ -1,0 +1,40 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import java.rmi.RemoteException;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+import common.msg.chat.IAddMeMsg;
+import gl22_hl57.game_server.model.ChatServer;
+
+public class AddMeCmd extends AOurDataPacketAlgoCmd<IAddMeMsg, IChatServer> {
+
+	private static final long serialVersionUID = 7839777114272693152L;
+
+	transient ICmd2ModelAdapter cmd2ModelAdpter;
+	
+	public AddMeCmd(ICmd2ModelAdapter cmd2ModelAdpter) {
+		this.cmd2ModelAdpter = cmd2ModelAdpter;
+	}
+	
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<IAddMeMsg, IChatServer> host, Object... params) {
+		IChatServer sender = host.getSender();
+		try {
+			cmd2ModelAdpter.getChatServer().getChatroom().addChatServer(sender);
+			// view refresh
+			ChatServer chatServer = (ChatServer) cmd2ModelAdpter.getChatServer();
+			chatServer.refresh();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.cmd2ModelAdpter = cmd2ModelAdpt;
+	}
+}

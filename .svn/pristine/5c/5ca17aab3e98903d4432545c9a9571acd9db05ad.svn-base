@@ -1,0 +1,43 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+import common.msg.IChatMsg;
+import gov.nasa.worldwind.geom.Position;
+
+public class AvatarUpdateInfo implements IChatMsg {
+
+	private static final long serialVersionUID = -5493378342110442677L;
+	
+	private UUID gameId;
+	
+	private UUID id;
+	
+	private Position pos;
+	
+	private Integer money;
+		
+	public AvatarUpdateInfo(UUID gameId, UUID avatarId, Position newPos, Integer newMoney) {
+		this.gameId = gameId;
+		id = avatarId;
+		pos = newPos;
+		money = newMoney;
+	}
+
+	public UUID getGameId() {
+		return gameId;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public Position getPos() {
+		return pos;
+	}
+
+	public Integer getMoney() {
+		return money;
+	}
+
+}
+

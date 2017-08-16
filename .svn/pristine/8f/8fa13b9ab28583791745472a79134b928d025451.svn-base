@@ -1,0 +1,21 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+
+import common.msg.IChatMsg;
+
+public class StartGameMsg implements IChatMsg {
+
+	private static final long serialVersionUID = 1077739921392340677L;
+	
+	private UUID gameId;
+	
+	public StartGameMsg(UUID gameId) {
+		this.gameId = gameId;
+	}
+	
+	public UUID getGameId() {
+		return gameId;
+	}
+
+}

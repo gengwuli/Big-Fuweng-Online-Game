@@ -1,0 +1,264 @@
+package gl22_hl57.game_client.model;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
+
+import common.IChatServer;
+import common.OurDataPacket;
+import common.msg.IChatMsg;
+import gl22_hl57.game_client.model.msg.AvatarUpdateInfo;
+import gl22_hl57.game_client.model.msg.CityUpdateInfo;
+import gl22_hl57.game_client.model.msg.StartGameMsg;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.render.PointPlacemark;
+import provided.datapacket.DataPacket;
+
+public class GameModel implements Serializable {
+
+	private static final long serialVersionUID = -4148849212631519141L;
+	
+	private IGameModel2ViewAdapter view;
+	
+	private List<City> cityList = new ArrayList<>(); // city list (route)
+	
+	private List<Avatar> avatarList = new ArrayList<>();
+	
+	private int avatarLocIdx = 0;
+	
+	private UUID gameId;
+	
+	private Avatar myAvatar = null;
+			
+	public GameModel(IGameModel2ViewAdapter adapter) {
+		view = adapter;
+		initCitiesData();
+	}
+	
+	public void start() {
+		view.updateMoney(myAvatar.getMoney());
+	}
+	
+	public void setGameId(UUID gameId) {
+		this.gameId = gameId;
+	}
+	
+	public void moveAvatar(int steps) {
+		avatarLocIdx = (avatarLocIdx+steps)%cityList.size(); // compute index of next city by adding step
+		PointPlacemark nextCity = cityList.get(avatarLocIdx);
+		dispatchAvatarUpdate(myAvatar.getMyId(), nextCity.getPosition(), null);
+	}
+	
+	public void updateAvatar(AvatarUpdateInfo info) {
+		// search for the avatar we need to update
+		UUID updateAvatarId = info.getId();
+		Avatar avatar = lookupAvatar(updateAvatarId);
+		// do update on that avatar
+		if (avatar!=null) {
+			// position
+			Position pos = info.getPos();
+			if (pos!=null) {
+				avatar.setPosition(pos);
+				view.goTo(pos, true);
+			}
+			// money
+			Integer money = info.getMoney();
+			if (money!=null) {
+				avatar.changeMoney(money);
+				if (updateAvatarId==myAvatar.getMyId()) 
+					view.updateMoney(avatar.getMoney());
+			}
+		}
+	}
+	
+	public void updateCity(CityUpdateInfo info) {
+		City city = cityList.get(info.getCityIdx());
+		UUID newOwnerId = info.getOwnerId();
+		if (newOwnerId==Avatar.DEFAULT_AVATAR.getMyId()) // was released
+			city.setOwner(Avatar.DEFAULT_AVATAR);
+		else if (newOwnerId!=null) // just bought it
+			city.setOwner(lookupAvatar(newOwnerId));
+		else // upgrade it
+			city.upgrade();
+	}
+		
+	public void buyTheCity() {
+		int moneyleft = myAvatar.getMoney();
+		int price = cityList.get(avatarLocIdx).getPrice();
+		if (price>moneyleft) return;
+		dispatchAvatarUpdate(myAvatar.getMyId(), null, -price);
+		if (cityList.get(avatarLocIdx).isUpgradable()) { // flag or house
+			System.out.println("Upgrade city("+cityList.get(avatarLocIdx).getName()+").");
+			dispatchCityUpdate(avatarLocIdx, null);
+		} else { // unoccupied
+			System.out.println("Buy city("+cityList.get(avatarLocIdx).getName()+").");
+			dispatchCityUpdate(avatarLocIdx, myAvatar.getMyId());
+		}
+	}
+	
+	public void checkCityStatus() {
+		City city = cityList.get(avatarLocIdx);
+		Avatar owner = city.getOwner();
+		int price = city.getPrice();
+		int moneyleft = myAvatar.getMoney();
+		// teammates own it, upgrade?
+		if (owner.getTeamId()==myAvatar.getTeamId()) {
+			if (city.isUpgradable() && price<=moneyleft)
+				view.promptDialog(city.getName()+", "+city.getCountry(), "Would you like to upgrade "+city.getName()+" with $"+city.getPrice()+" ?", true);
+			return; 
+		}
+		// no one owns it
+		if (owner==Avatar.DEFAULT_AVATAR) {
+			if (price>moneyleft)	// prompt sorry message if money is not enough
+				view.promptDialog(city.getName()+", "+city.getCountry(), "Sorry, you cannot afford it!", false);
+			else 	// prompt buying dialog if money is enough
+				view.promptDialog(city.getName()+", "+city.getCountry(), "Would you like to buy "+city.getName()+" with $"+city.getPrice()+" ?", true);
+			return;
+		} 
+		// or, we gotta pay tolls
+		else {
+			int tolls = cityList.get(avatarLocIdx).getTolls();
+			int paid = moneyleft-Math.max(moneyleft-tolls, 0);
+			// pay the owner for the tolls by substracting tolls from my money and adding tolls to owner's pocket
+			dispatchAvatarUpdate(myAvatar.getMyId(), null, -tolls);
+			dispatchAvatarUpdate(owner.getMyId(), null, paid);
+			if (myAvatar.isBankrupted()) { // bankrupt
+				view.promptDialog("Bankrupt!", "You lost! You have no money left. All your properties would be released to the market.", false);
+				// release the properties
+				int size = cityList.size();
+				for (int i=0; i<size; i++) {
+					if (cityList.get(i).getOwner()==myAvatar) 
+						dispatchCityUpdate(i, Avatar.DEFAULT_AVATAR.getMyId());
+				}
+			}
+		}
+	}
+	
+	public void finishedTurn() {
+		// start game from myself
+		StartGameMsg startGame = new StartGameMsg(gameId);
+		OurDataPacket<StartGameMsg, IChatServer> startGameDp = new OurDataPacket<StartGameMsg, IChatServer>(StartGameMsg.class, startGame, myAvatar.getMyStub());
+		try {
+			// TODO pass to next player not myself
+			myAvatar.getMyStub().receive(startGameDp);
+		} catch (RemoteException e) {
+			System.out.println("Failed passing turn to next guy");
+			e.printStackTrace();
+		}
+	}
+	
+	public Avatar[] getTeammates() {
+		List<Avatar> liveTeammates = new ArrayList<>();
+		for (Avatar teammate : myAvatar.getTeammates()) {
+			if (!teammate.isBankrupted())
+				liveTeammates.add(teammate);
+		}
+		return liveTeammates.toArray(new Avatar[0]);
+	}
+	public List<Avatar> getAvatarMarkers() {
+		return avatarList;
+	}
+	
+	public List<City> getCityMarkers() {
+		return cityList;
+	}
+
+	private void dispatchCityUpdate(int cityIdx, UUID ownerId) {
+		System.out.println("Dispatching city("+cityList.get(cityIdx).getName()+") update: {cityIdx: "+cityIdx+" , ownerId: "+ownerId+"}");
+		CityUpdateInfo cityUpdate = new CityUpdateInfo(gameId, cityIdx, ownerId);
+		OurDataPacket<CityUpdateInfo, IChatServer> avatarDp = new OurDataPacket<CityUpdateInfo, IChatServer>(CityUpdateInfo.class, cityUpdate, myAvatar.getMyStub());
+		sendUpdateDP(avatarDp);
+	}
+
+	private void dispatchAvatarUpdate(UUID avatarId, Position pos, Integer money) {
+		System.out.println("Dispatching avatar update: {avatarId: "+avatarId+" , position: "+pos+" , money: "+money+"}");
+		AvatarUpdateInfo avatarUpdate = new AvatarUpdateInfo(gameId, avatarId, pos, money);
+		OurDataPacket<AvatarUpdateInfo, IChatServer> avatarDp = new OurDataPacket<AvatarUpdateInfo, IChatServer>(AvatarUpdateInfo.class, avatarUpdate, myAvatar.getMyStub());
+		sendUpdateDP(avatarDp);
+	}
+	
+	private void sendUpdateDP(OurDataPacket<? extends IChatMsg, IChatServer> dp) {
+		System.out.println("Sending game update datapacket.");
+		Iterator<Avatar> itr = avatarList.iterator();
+		while(itr.hasNext()) {
+			Avatar avatar = itr.next();
+			try {
+				avatar.receive(dp);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				System.out.println("Failed sending game update datapacket, remote exception: "+e);
+			}
+		}
+	}
+		
+	private Avatar lookupAvatar(UUID avatarId) {
+		for (Avatar itr : avatarList.toArray(new Avatar[0])) {
+			if (itr.getMyId()==avatarId) 
+				return itr;
+		}
+		return null;
+	}
+	
+	public void initAvatarData(Team[] teams, IChatServer[] players, IChatServer me) {
+		// init avatars
+		if (cityList.isEmpty()) return;
+		Position origin = cityList.get(0).getPosition();
+		int teamNum = teams.length;
+		int playerNum = players.length;
+		for (int i=0; i<playerNum; i++) {
+			avatarList.add(new Avatar(players[i], teams[i%teamNum], origin));
+			if (players[i]==me)
+				myAvatar = avatarList.get(i);
+		}
+	}
+	
+	public void startTurn() {
+		// directly pass to next player if I am bankrupted
+		if (myAvatar.isBankrupted()) 
+			this.finishedTurn();
+		else // enable buttons
+			view.startTurn();
+	}
+	
+	private void initCitiesData() {
+        // A csv file name.
+		String filename = "../resources/c_worldcities.csv";
+		BufferedReader reader;
+		try {
+			// open file input stream
+			reader = new BufferedReader(new FileReader(filename));
+			String line = null; // line storing a line from csv
+			Scanner scanner = null; // scanner retrieving data from csv
+			// variables storing city fields from csv	
+			String cityName = null, countryName = null;
+			double latitude = 0, longitude = 0;
+			int price = 0;
+			System.out.println("Reading city data...");
+			// read file line by line
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+				scanner = new Scanner(line);
+				scanner.useDelimiter(",");
+				cityName = scanner.next();
+				countryName = scanner.next();
+				latitude = scanner.nextDouble();
+				longitude = scanner.nextDouble();
+				price = scanner.nextInt();
+				cityList.add(new City(cityName, countryName, latitude, longitude, price));
+			}
+			//close reader
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed reading cities data, IOException: "+e);
+		}
+	}
+	
+}

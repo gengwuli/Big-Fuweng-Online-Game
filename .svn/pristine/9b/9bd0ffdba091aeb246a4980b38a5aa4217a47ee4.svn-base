@@ -1,0 +1,199 @@
+package gl22_hl57.game_server.view;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
+import java.util.HashSet;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+
+import common.IChatServer;
+import common.IChatroom;
+import common.IUser;
+
+/**
+ * Main MVC
+ * 
+ * @author Gengwu Li, Zhaohan Jia
+ * @version 1.0, Nov 11, 2016
+ */
+public class MainView extends JFrame {
+
+	/**
+	 * Serial version id
+	 */
+	private static final long serialVersionUID = -1102405858279143552L;
+
+	/**
+	 * Tab panel
+	 */
+	private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+
+	/**
+	 * JPanel
+	 */
+	private final JPanel panel = new JPanel();
+
+	/**
+	 * Scroll panel
+	 */
+	private final JScrollPane scrollPane = new JScrollPane();
+
+	/**
+	 * Logging textarea
+	 */
+	private final JTextArea ta_log = new JTextArea();
+
+	/**
+	 * Menu bar
+	 */
+	private final JMenuBar menuBar = new JMenuBar();
+
+	/**
+	 * Menu item
+	 */
+	private final JMenu mn_option = new JMenu("Menu");
+
+	/**
+	 * Menu item for connect
+	 */
+	private final JMenuItem mntm_connect = new JMenuItem("Connect");
+
+	/**
+	 * Menu item for create
+	 */
+	private final JMenuItem mntm_create = new JMenuItem("Create Room");
+
+	/**
+	 * View to model adapter
+	 */
+	private IMain2ModelAdpt view2ModelAdpt;
+
+	/**
+	 * Constructor
+	 */
+	public MainView() {
+		initGUI();
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param view2ModelAdpt
+	 *            View to model adapter
+	 */
+	public MainView(IMain2ModelAdpt view2ModelAdpt) {
+		this.view2ModelAdpt = view2ModelAdpt;
+		initGUI();
+	}
+
+	/**
+	 * Initialization of GUI
+	 */
+	private void initGUI() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				view2ModelAdpt.closeChatApp();
+				System.out.println("Close ChatApp.");
+			}
+		});
+		setTitle("ChatApp");
+		setSize(800, 600);
+		setLocationRelativeTo(null);
+		tabbedPane.setToolTipText("Tab Panel.");
+		getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.addTab("Log", null, panel, null);
+		panel.setLayout(new BorderLayout(0, 0));
+		panel.add(scrollPane);
+		ta_log.setToolTipText("Log.");
+		scrollPane.setViewportView(ta_log);
+
+		setJMenuBar(menuBar);
+		menuBar.add(mn_option);
+		mn_option.setToolTipText("Select from the menu.");
+		mntm_connect.addActionListener((ActionEvent e) -> {
+			String ip = JOptionPane.showInputDialog("Input remote user IP to connect:");
+			if (ip == null) {
+				return;
+			}
+			EventQueue.invokeLater(() -> {
+				IUser user = view2ModelAdpt.connect(ip);
+				try {
+					HashSet<IChatroom> chatrooms = user.getChatrooms();
+					IChatroom[] objects = new IChatroom[chatrooms.size()];
+					int i = 0;
+					for (IChatroom room : chatrooms) {
+						objects[i++] = room;
+					}
+					if (user.getChatrooms().size() == 0) {
+						JOptionPane.showMessageDialog(this, "No room to join!");
+						return;
+					}
+					Object room = JOptionPane.showInputDialog(null, "select which room to join in:", "hello",
+							JOptionPane.DEFAULT_OPTION, null, objects, user.getChatrooms().iterator().next());
+					System.out.println(room);
+					if (room != null) {
+						this.view2ModelAdpt.joinChatRoom((IChatroom) room);
+					}
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+			});
+		});
+
+		mn_option.add(mntm_connect);
+		mntm_connect.setToolTipText("Connect to other user.");
+		mntm_create.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String returnVal = JOptionPane.showInputDialog("Input a room name");
+				view2ModelAdpt.creatRoom(returnVal);
+			}
+		});
+
+		mn_option.add(mntm_create);
+		mntm_create.setToolTipText("Create a new chatroom.");
+	}
+
+	/**
+	 * Start the view
+	 */
+	public void start() {
+		setVisible(true);
+	}
+
+	/**
+	 * Install the mini view to main view
+	 * @param miniView The mini view
+	 */
+	public void install(MiniView<IChatServer> miniView) {
+		tabbedPane.add(miniView.toString(), miniView);
+	}
+
+	/**
+	 * Append info to logging text area
+	 * @param info The text to be appended
+	 */
+	public void appendInfo(String info) {
+		ta_log.append(info + "\n");
+	}
+
+	/**
+	 * Leave a room
+	 * @param miniView Mini view
+	 */
+	public void leaveRoom(MiniView<IChatServer> miniView) {
+		tabbedPane.remove(miniView);
+	}
+}

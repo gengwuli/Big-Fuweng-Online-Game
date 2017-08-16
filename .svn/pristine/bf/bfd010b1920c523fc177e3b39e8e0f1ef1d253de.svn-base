@@ -1,0 +1,51 @@
+package gl22_hl57.game_client.model.msg;
+
+import common.AOurDataPacketAlgoCmd;
+import common.IChatServer;
+import common.ICmd2ModelAdapter;
+import common.OurDataPacket;
+import gl22_hl57.game_client.model.IPlayer2GameAdapter;
+import provided.mixedData.MixedDataKey;
+
+/**
+ * A game command which is used to update info of an avatar in the game 
+ * @author Gengwu Li, Henry Lin
+ */
+public class AvatarUpdateCmd extends AOurDataPacketAlgoCmd<AvatarUpdateInfo, IChatServer> {
+	
+	/**
+	 * Generated serial version id
+	 */
+	private static final long serialVersionUID = 5497872340660682442L;
+	
+	/**
+	 * An adapter which enables this command to talk to mini model
+	 */
+	private transient ICmd2ModelAdapter model;
+
+	/**
+	 * Constructor of AvatarUpdateCmd, given an ICmd2ModelAdapter.
+	 * @param cmd2ModelAdpt an adapter which is used to talk to mini model
+	 */
+	public AvatarUpdateCmd(ICmd2ModelAdapter cmd2ModelAdpt) {
+		this.setCmd2ModelAdpt(cmd2ModelAdpt);
+	}
+
+	@Override
+	public Void apply(Class<?> index, OurDataPacket<AvatarUpdateInfo, IChatServer> host, Object... params) {
+		System.out.println("AvatarUpdateCmd applies. ");
+		AvatarUpdateInfo info = host.getData();
+		System.out.println("Update: {avatarId: "+info.getId()+" , position: "+info.getPos()+" , money: "+info.getMoney()+"}");
+		MixedDataKey<IPlayer2GameAdapter> gameKey = new MixedDataKey<IPlayer2GameAdapter>(info.getGameId(), "", IPlayer2GameAdapter.class);
+		IPlayer2GameAdapter game = model.getFromLocalDict(gameKey);
+		if (game!=null)
+			game.updateAvatar(info);
+		return null;
+	}
+
+	@Override
+	public void setCmd2ModelAdpt(ICmd2ModelAdapter cmd2ModelAdpt) {
+		model = cmd2ModelAdpt;
+	}
+
+}

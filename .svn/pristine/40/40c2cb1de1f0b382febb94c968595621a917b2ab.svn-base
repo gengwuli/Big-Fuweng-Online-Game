@@ -1,0 +1,19 @@
+package gl22_hl57.game_client.model.msg;
+
+import java.util.UUID;
+
+public class EndGameMsg extends AGameMsg {
+
+	private static final long serialVersionUID = -6146086028148518079L;
+
+	private boolean won;
+		
+	public EndGameMsg(UUID gameUUID, boolean isWinner) {
+		super(gameUUID);
+		won = isWinner;
+	}
+		
+	public boolean didWin() {
+		return won;
+	}
+}

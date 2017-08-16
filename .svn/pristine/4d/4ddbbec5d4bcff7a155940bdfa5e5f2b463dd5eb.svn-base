@@ -1,0 +1,176 @@
+package gl22_hl57.game_client.model;
+
+import java.awt.Color;
+import java.io.Serializable;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.Offset;
+import gov.nasa.worldwind.render.PointPlacemark;
+import gov.nasa.worldwind.render.PointPlacemarkAttributes;
+
+public class City extends PointPlacemark implements Serializable {
+
+	private static final long serialVersionUID = 8082077734679553945L;
+	
+//	public enum CityConstructingState {
+//		
+//	    UNOCCUPIED(1,"WhiteFlag.png"), FLAG(2,"WhiteFlag.png"), HOUSE(3, "House.png"), SKYSCRAPER(4, "Skyscraper.png");
+//		private int weight;
+//		private String imagePath;
+//		private CityConstructingState(int val, String imageName) {
+//			weight = val;
+//			imagePath = "gl22_hl57/game_client/resources/" + imageName;
+//		}
+//	}
+	public enum CityConstructingState {
+		
+	    UNOCCUPIED(1,"https://res.cloudinary.com/hdjcahswx/image/upload/v1481171451/b8ud5z01hrb3lw9hvi48.png"), 
+	    FLAG(2,"https://res.cloudinary.com/hdjcahswx/image/upload/v1481171451/b8ud5z01hrb3lw9hvi48.png"), 
+	    HOUSE(3, "https://res.cloudinary.com/hdjcahswx/image/upload/v1481171260/nqtmtiadkfiex13iudgl.png"), 
+	    SKYSCRAPER(4, "https://res.cloudinary.com/hdjcahswx/image/upload/v1481171431/xvphppbjnegkbzlqaheq.png");
+		private int weight;
+		private String imagePath;
+		private CityConstructingState(int val, String imageName) {
+			weight = val;
+			imagePath = imageName;
+		}
+	}
+	
+	private String name;
+	
+	private String country;
+	
+	private double lat; 
+	
+	private double lng;
+	
+	private CityConstructingState state;
+	
+	private Avatar owner;
+	
+	private int price = 0; // price of this city
+			
+	public City(CityData data) {
+		super(Position.fromDegrees(data.getLat(), data.getLng(), 1e7));
+		name = data.getName();
+		country = data.getCountry();
+		lat = data.getLat();
+		lng = data.getLng();
+		price = data.getPrice();
+		initMarker();
+		setOwner(Avatar.DEFAULT_AVATAR);
+		setState(CityConstructingState.UNOCCUPIED);
+	}
+
+	private void initMarker() {
+		this.setLabelText(getName());
+//		this.setValue(AVKey.DISPLAY_NAME, toString());
+		this.setLineEnabled(false);
+		this.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
+		this.setEnableBatchPicking(true); // enable label picking for this placemark
+        PointPlacemarkAttributes ppAttrs = new PointPlacemarkAttributes();
+//        ppAttrs.setImageAddress("../resources/WhiteFlag.png");
+//        ppAttrs.setImageColor(new Color(1f, 1f, 1f, 0.8f)); // image color for different states
+//        ppAttrs.setScale(0.1);
+        ppAttrs.setLabelOffset(new Offset(0.9d, 0.6d, AVKey.FRACTION, AVKey.FRACTION));
+        this.setAttributes(ppAttrs);
+	}
+	
+	public Avatar getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Avatar newOwner) {
+		owner = newOwner;
+		if (owner==Avatar.DEFAULT_AVATAR) {
+			setState(CityConstructingState.UNOCCUPIED);
+		} else { 
+			setState(CityConstructingState.FLAG);
+		}
+	}
+
+	private void setState(CityConstructingState newState) {
+		state = newState;
+		PointPlacemarkAttributes attrs = this.getAttributes();
+		attrs.setImageAddress(state.imagePath); // change image based on states
+		switch(state) 
+		{
+			case FLAG:
+				attrs.setImageColor(owner.getTeamColor());
+				attrs.setLabelMaterial(new Material(owner.getTeamColor()));
+				break;
+			case HOUSE:
+		        attrs.setImageOffset(new Offset(100d, 100d, AVKey.PIXELS, AVKey.PIXELS));
+				break;
+			case SKYSCRAPER:
+		        attrs.setScale(0.2);
+				break;
+			default:
+		        attrs.setImageOffset(new Offset(0d, 0d, AVKey.PIXELS, AVKey.PIXELS));
+				attrs.setImageColor(Color.LIGHT_GRAY);
+				attrs.setLabelMaterial(new Material(Color.LIGHT_GRAY));
+		        attrs.setScale(0.1);
+		}
+		this.setValue(AVKey.DISPLAY_NAME, toString());
+	}
+	
+	public boolean isUpgradable() {
+		return state==CityConstructingState.FLAG || state==CityConstructingState.HOUSE;
+	}
+	
+	public void upgrade() {
+		if (state==CityConstructingState.FLAG)
+			setState(CityConstructingState.HOUSE);
+		else if (state==CityConstructingState.HOUSE)
+			setState(CityConstructingState.SKYSCRAPER);
+	}
+	
+	public int getPrice() {
+		return price*state.weight;
+	}
+	
+	public int getTolls() {
+		return price*state.weight;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public double getLat() {
+		return lat;
+	}
+
+	public double getLng() {
+		return lng;
+	}
+
+	@Override
+	public String toString() {
+		return name  + " $" + price + "\n" + owner.getName();
+//		return name + ", " + country;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((country == null) ? 0 : country.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null || !(obj instanceof City))
+			return false;
+		return this.hashCode()==obj.hashCode();
+	}
+		
+}

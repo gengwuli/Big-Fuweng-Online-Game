@@ -1,0 +1,7 @@
+package gl22_hl57.game_server.model.msg.chat;
+
+import common.msg.chat.ILeaveMsg;
+
+public class LeaveMsg implements ILeaveMsg {
+
+}
